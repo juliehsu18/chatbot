@@ -337,39 +337,36 @@ $(function () {
     }
 
     function playBotRow(rowId, callback, typingDelay = 800) {
-        const $row = $(rowId);
-        const $content = $row.find('.msg-content');
-        const $typing = $content.children('.typing-bubble');
-        const $others = $content.children().not('.typing-bubble');
-    
-        $typing.hide();
-        $others.hide();
-    
-        $row
-            .removeClass('is-hidden')
-            .css('display', 'flex')
-            .hide()
-            .fadeIn(200, function () {
-                $(this).css('display', 'flex');
-    
-                $typing.fadeIn(150, function () {
-                    // scrollChatToBottom();
-                    scrollToRowTop($row);
-    
-                    addTimer(function () {
-                        $typing.fadeOut(150, function () {
-                            $others.fadeIn(200, function () {
-                                // scrollChatToBottom();
-                                scrollToRowTop($row);
-                                if (typeof callback === 'function') {
-                                    callback();
-                                }
-                            });
+    const $row = $(rowId);
+    const $content = $row.find('.msg-content');
+    const $typing = $content.children('.typing-bubble');
+    const $others = $content.children().not('.typing-bubble');
+
+    $typing.hide();
+    $others.hide();
+
+    $row
+        .removeClass('is-hidden')
+        .css('display', 'flex')
+        .hide()
+        .fadeIn(200, function () {
+            $(this).css('display', 'flex');
+
+            $typing.fadeIn(150, function () {
+                addTimer(function () {
+                    $typing.fadeOut(150, function () {
+                        $others.fadeIn(200, function () {
+                            scrollToRowTop($row);
+
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
                         });
-                    }, typingDelay);
-                });
+                    });
+                }, typingDelay);
             });
-    }
+        });
+}
 
     function resetFlow() {
         clearAllTimers();
@@ -594,9 +591,17 @@ $(function () {
 
 function scrollToRowTop($row) {
     const $chat = $('.chat-container');
+    const chatEl = $chat[0];
+    const rowEl = $row[0];
+
+    const chatRect = chatEl.getBoundingClientRect();
+    const rowRect = rowEl.getBoundingClientRect();
+
+    const targetScrollTop =
+        chatEl.scrollTop + (rowRect.top - chatRect.top) - 8;
 
     $chat.stop().animate({
-        scrollTop: $chat.scrollTop() + $row.position().top
+        scrollTop: targetScrollTop
     }, 300);
 }
 
