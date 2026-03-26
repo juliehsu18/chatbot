@@ -1,0 +1,3017 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玉山銀行客服嘿熊</title>
+    <style>
+        /* Design Tokens (Figma Variables) */
+        :root {
+            --mib-sys-colour-primary-background-default: #f4f8fa;
+            --mib-ref-colour-gray-12: #141414;
+            --mib-ref-colour-primary-3: #bde3e2;
+            --chatbot-white: #ffffff;
+            --chatbot-black: #1c1c1c;
+            --chatbot-primary: #0f62fe;
+            --chatbot-placeholder: #acacac;
+            --chatbot-border: #e1e2e2;
+            --mib-ref-colour-primary-8: #00a19b;
+            --font-family-base: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body, html {
+            height: 100%;
+            font-family: var(--font-family-base);
+            background-color: var(--mib-sys-colour-primary-background-default);
+            justify-content: center;
+        }
+
+        /* RWD Container */
+        .app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--mib-sys-colour-primary-background-default);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        /*.chat-container .msg-row {
+            display: none;
+        }
+*/
+        /*.chat-container .msg-row {
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+        }*/
+
+        
+        .msg-row.is-hidden {
+            display: none !important;
+        }
+
+        /* RWD Media Queries */
+        @media (min-width: 320px) {
+            
+        }
+        @media (min-width: 768px) {
+            
+        }
+        @media (min-width: 1440px) {
+           
+        }
+        
+        /* 1. Navbar */
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            padding: 0 16px;
+            background-color: var(--mib-sys-colour-primary-background-default);
+            flex-shrink: 0;
+        }
+
+        .nav-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--mib-ref-colour-gray-12);
+        }
+
+        .action-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 2. Announce Floating Block */
+        .Anounce {
+            display: flex;
+            align-items: center;
+            height: 44px;
+            padding: 0 16px;
+            background-color: var(--chatbot-white);
+            border-top: 1px solid var(--mib-ref-colour-primary-3);
+            border-bottom: 1px solid var(--mib-ref-colour-primary-3);
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .message {
+            flex-grow: 1;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--chatbot-black);
+            display: flex;
+            align-items: center;
+        }
+
+        .message a {
+            color: var(--chatbot-primary);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        /* 3. Chat Area */
+        .chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: var(--mib-sys-colour-primary-background-default);
+            /* Placeholder space */
+        }
+
+        /* 4. Input Area */
+        .InputArea {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            padding: 13px 16px;
+            background-color: var(--mib-sys-colour-primary-background-default);
+            border-top: 1px solid var(--mib-ref-colour-primary-3);
+            flex-shrink: 0;
+            gap: 12px;
+        }
+
+        .input-wrapper {
+            flex-grow: 1;
+            height: 44px; /* Based on the 70px height minus 13px py padding * 2 = 70 - 26 = 44px for the input element */
+            border-radius: 30px;
+            border: 1px solid var(--chatbot-border);
+            background-color: var(--chatbot-white);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: var(--font-family-base);
+            font-size: 16px;
+            color: var(--mib-ref-colour-gray-12);
+            background: transparent;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--chatbot-placeholder);
+        }
+
+        /* Icons setup */
+        .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .icon img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Size classes */
+        .icon-24 { width: 24px; height: 24px; }
+        .icon-22 { width: 22px; height: 22px; }
+        .icon-32 { width: 32px; height: 32px; }
+        .icon-42 { width: 42px; height: 42px; }
+        .icon-44 { width: 44px; height: 44px; }
+
+        /* ARIA outlines for WCAG AA keyboard navigation */
+        :focus-visible {
+            outline: 2px solid var(--chatbot-primary);
+            outline-offset: 2px;
+        }
+
+        /* 5. Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 56px; /* Below navbar */
+            left: 0;
+            width: 100%;
+            background-color: var(--chatbot-white);
+            border-top: 1px solid var(--mib-ref-colour-primary-3);
+            box-shadow: 0px 3px 8px 0px rgba(95, 199, 185, 0.2);
+            z-index: 100;
+            display: none; /* Hidden by default */
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e1efef;
+        }
+
+        .menu-item.flex-col {
+            flex-direction: column;
+            align-items: flex-start;
+            border-bottom: none;
+        }
+
+        .menu-item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .menu-text {
+            font-size: 18px;
+            color: #222222;
+        }
+
+        .menu-privacy-text {
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.8);
+            line-height: 1.8;
+            margin-top: 6px;
+        }
+
+        .menu-privacy-text a {
+            color: #00a19b;
+            text-decoration: underline;
+        }
+
+        .btn-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 20px;
+            width: 174px;
+            height: 38px;
+            border-radius: 40px;
+            border: 0.5px solid #85d0ce;
+            background: linear-gradient(90deg, #cbe9e9 0%, #cbe9e9 100%), linear-gradient(90deg, #c1e4e3 0%, #e1efef 100%);
+            color: #005154;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: var(--font-family-base);
+            cursor: pointer;
+        }
+
+        /* Animated Hamburger Icon */
+        .hamburger-box {
+            width: 20px;
+            height: 14px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .hamburger-inner {
+            display: block;
+            top: 50%;
+            margin-top: -1px;
+            width: 20px;
+            height: 2px;
+            background-color: var(--mib-ref-colour-gray-12);
+            border-radius: 2px;
+            position: absolute;
+            transition: transform 0.15s ease;
+        }
+
+        .hamburger-inner::before, .hamburger-inner::after {
+            width: 20px;
+            height: 2px;
+            background-color: var(--mib-ref-colour-gray-12);
+            border-radius: 2px;
+            position: absolute;
+            transition: transform 0.15s ease;
+            content: "";
+            display: block;
+        }
+
+        .hamburger-inner::before {
+            top: -6px;
+        }
+
+        .hamburger-inner::after {
+            bottom: -6px;
+        }
+
+        .is-active .hamburger-box .hamburger-inner {
+            transform: rotate(45deg);
+        }
+
+        .is-active .hamburger-box .hamburger-inner::before {
+            top: 0;
+            opacity: 0;
+        }
+
+        .is-active .hamburger-box .hamburger-inner::after {
+            bottom: 0;
+            transform: rotate(-90deg);
+        }
+
+        /* Animated Expand Button (+ to X) */
+        .expand-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--mib-ref-colour-primary-8);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .expand-icon {
+            width: 20px;
+            height: 20px;
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .expand-line {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+
+        .expand-line.vertical {
+            width: 2px;
+            height: 20px;
+            top: 0;
+            left: 9px;
+        }
+
+        .expand-line.horizontal {
+            width: 20px;
+            height: 2px;
+            top: 9px;
+            left: 0;
+        }
+
+        /* Active State (X) */
+        .expand-btn.is-active .expand-icon {
+            transform: rotate(135deg); /* Spin to X */
+        }
+
+        /* Glowing Animation (every ~60s, glows for short duration) */
+        @keyframes glow-pulse {
+            0%, 96%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 161, 155, 0);
+            }
+            98% {
+                box-shadow: 0 0 0 15px rgba(0, 161, 155, 0.4);
+            }
+        }
+
+        .expand-btn:not(.is-active) {
+            animation: glow-pulse 60s infinite;
+        }
+
+        /* 6. Action Panel (Expandable) */
+        .action-panel {
+            display: none; /* hidden by default */
+            flex-shrink: 0;
+            width: 100%;
+            background-color: var(--chatbot-white);
+            border-top: 1px solid var(--mib-ref-colour-primary-3);
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            width: 100%;
+        }
+
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 20px;
+            border-right: 1px solid #e1efef;
+            border-bottom: 1px solid #e1efef;
+            background-color: transparent;
+            border-top: none;
+            border-left: none;
+            cursor: pointer;
+        }
+
+        .action-item:nth-child(3n) {
+            border-right: none;
+        }
+        .action-item:nth-child(n+4) {
+            border-bottom: none;
+        }
+
+        .action-item-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-item-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .action-item-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--chatbot-black);
+            text-align: center;
+        }
+
+        /* 7. Chat Container & Messages */
+        .chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .msg-row {
+            display: flex;
+            width: 100%;
+            gap: 8px;
+        }
+
+        .msg-row.bot {
+            justify-content: flex-start;
+        }
+
+        .msg-row.user {
+            justify-content: flex-end;
+        }
+
+        .msg-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--mib-ref-colour-primary-3);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .msg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .msg-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: calc(100% - 58px);
+        }
+
+        .msg-row.user .msg-content {
+            align-items: flex-end;
+            max-width: 100%;
+        }
+
+        .msg-bubble {
+            padding: 16px 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            position: relative;
+            background-color: var(--chatbot-white);
+            color: var(--chatbot-black);
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            word-wrap: break-word;
+        }
+
+        .msg-row.bot .msg-bubble {
+            min-width: 225px;
+            max-width: 565px;
+        }
+
+        .msg-row.user .msg-bubble {
+            background-color: var(--mib-ref-colour-primary-8);
+            color: var(--chatbot-white);
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        /* Caret pointing left for Bot using ::before */
+        .msg-row.bot .msg-bubble.has-caret::before {
+            content: "";
+            position: absolute;
+            top: 14px;
+            left: -6px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 6px 8px 6px 0;
+            border-color: transparent var(--chatbot-white) transparent transparent;
+        }
+
+        /* Caret pointing right for User using ::before */
+        .msg-row.user .msg-bubble.has-caret::before {
+            content: "";
+            position: absolute;
+            top: 14px;
+            right: -6px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 6px 0 6px 8px;
+            border-color: transparent transparent transparent var(--mib-ref-colour-primary-8);
+        }
+
+        .msg-time {
+            font-size: 14px;
+            color: #9c9c9c;
+            margin-top: 4px;
+            text-align: right;
+            align-self: flex-end;
+        }
+
+        /* Chat Typography Utilities */
+        .bold { font-weight: bold; }
+        .text-red { color: #c92e34; }
+        .text-green { color: #007a7a; }
+        .link-teal { color: #00a19b; text-decoration: underline; text-underline-offset: 2px;}
+
+        /* Bot Action Buttons inside Bubble */
+        .msg-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .msg-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 20px;
+            height: 38px;
+            border-radius: 40px;
+            border: 0.5px solid #85d0ce;
+            font-size: 16px;
+            font-weight: bold;
+            color: #005154;
+            cursor: pointer;
+            text-decoration: none;
+            background: transparent;
+            width: 100%;
+            font-family: inherit;
+        }
+        .msg-action-btn.primary {
+            background: #76cdcd;
+        }
+        .msg-action-btn.secondary {
+            background: #cbe9e9;
+        }
+
+        /* Feedback Block */
+        .msg-row.bot .msg-feedback {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 16px 20px;
+            background-color: var(--chatbot-white);
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(95,199,185,0.2);
+            gap: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+            min-width: 225px;
+            max-width: 565px;
+            width: fit-content;
+        }
+        .msg-feedback .options {
+            display: flex;
+            gap: 11px;
+            flex-grow: 1;
+            justify-content: center;
+            align-items: center;
+        }
+        .msg-feedback-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 16px;
+            color: #28303f;
+            cursor: pointer;
+        }
+        .msg-feedback-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 2-Column Action Cards */
+        .msg-row.bot .action-cards-grid {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            min-width: 225px;
+            max-width: 565px;
+        }
+        .action-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            padding: 20px 0;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .action-card.bg-teal {
+            background: #c1e8e5;
+        }
+        .action-card-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 0px;
+        }
+        .action-card-text {
+            color: #00a19b;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        /* Bot Action Buttons inside Bubble */
+        .msg-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .msg-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 20px;
+            height: 38px;
+            border-radius: 40px;
+            border: 0.5px solid #85d0ce;
+            font-size: 16px;
+            font-weight: bold;
+            color: #005154;
+            cursor: pointer;
+            text-decoration: none;
+            background: transparent;
+            width: 100%;
+            font-family: inherit;
+        }
+        .msg-action-btn.primary {
+            background: #76cdcd;
+        }
+        .msg-action-btn.secondary {
+            background: #cbe9e9;
+        }
+
+        /* Feedback Block */
+        .msg-row.bot .msg-feedback {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 16px 20px;
+            background-color: var(--chatbot-white);
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(95,199,185,0.2);
+            gap: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+            min-width: 225px;
+            max-width: 565px;
+            width: fit-content;
+        }
+        .msg-feedback .options {
+            display: flex;
+            gap: 11px;
+            flex-grow: 1;
+            justify-content: center;
+            align-items: center;
+        }
+        .msg-feedback-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 16px;
+            color: #28303f;
+            cursor: pointer;
+        }
+        .msg-feedback-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 2-Column Action Cards */
+        .msg-row.bot .action-cards-grid {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            min-width: 225px;
+            max-width: 565px;
+        }
+        .action-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            padding: 20px 0;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .action-card.bg-teal {
+            background: #c1e8e5;
+        }
+        .action-card-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 0px;
+        }
+        .action-card-text {
+            color: #00a19b;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        /* Bill Summary Card Styles */
+        .bill-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        .bill-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--chatbot-primary);
+            margin-bottom: 2px;
+        }
+        .bill-info-text {
+            font-size: 16px;
+            color: rgba(0,0,0,0.8);
+            line-height: 1.5;
+        }
+        .bill-highlight {
+            background-color: #e1efef;
+            border: 0.5px solid #bddada;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+        .bill-main-amount {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .bill-label {
+            font-size: 14px;
+            color: #1c1c1c;
+        }
+        .bill-value-large {
+            font-size: 31px;
+            font-weight: bold;
+            color: #007a7a;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+        .bill-sub-info {
+            font-size: 14px;
+            color: #595959;
+            text-align: center;
+        }
+        .bill-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+        }
+        .bill-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #1c1c1c;
+        }
+        .bill-detail-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .bill-detail-label .icon-q {
+            width: 18px;
+            height: 18px;
+        }
+        .bill-btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .bill-btn {
+            flex: 1;
+            height: 44px;
+            border-radius: 40px;
+            border: 0.5px solid #85d0ce;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #005154;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: inherit;
+        }
+        .bill-btn.primary { background-color: #76cdcd; }
+        .bill-btn.secondary { background-color: #cbe9e9; }
+        .bill-btn-icon {
+            width: 23px;
+            height: 23px;
+        }
+
+        /* Status Pills */
+        .pill-bordered {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border: 1px solid;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: normal;
+        }
+        .pill-bordered.red {
+            color: #da1e28;
+            border-color: #c92e34;
+        }
+        .pill-bordered.teal {
+            color: #007a7a;
+            border-color: #00a19b;
+        }
+        .pill-bordered .icon-s {
+            width: 18px;
+            height: 18px;
+        }
+
+        .text-red {
+            color: #c92e34;
+        }
+
+        /* Transaction List Styles */
+        .transaction-search {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #acacac;
+            margin-bottom: 16px;
+        }
+        .transaction-search input {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #7c7c7c;
+            width: 100%;
+            font-family: var(--font-family-base);
+        }
+        .filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 16px;
+        }
+        .filter-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border: 1px solid #262626;
+            border-radius: 14px;
+            font-size: 16px;
+            color: #1c1c1c;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        .filter-pill.active {
+            background-color: #007a7a;
+            color: white;
+            border-color: #007a7a;
+        }
+        .filter-pill .pill-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s;
+        }
+        .filter-pill.active .pill-icon {
+            transform: rotate(0deg); /* placeholder for 'x' or similar if needed */
+        }
+        .pill-close {
+            display: none;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        .filter-pill.active .pill-close {
+            display: inline-block;
+        }
+        .filter-pill.active .pill-icon {
+            display: none;
+        }
+
+        .year-tag {
+            display: inline-flex;
+            background: #acacac;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .transaction-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .transaction-item-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .transaction-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .transaction-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: rgba(0,0,0,0.8);
+            text-align: left;
+            flex: 1;
+        }
+        .transaction-info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #7c7c7c;
+        }
+        .transaction-amount {
+            font-size: 16px;
+            color: #00a19b;
+            font-weight: normal;
+        }
+        .transaction-chevron {
+            width: 26px;
+            height: 26px;
+            transition: transform 0.3s;
+            transform: rotate(0deg);
+        }
+        .transaction-item.expanded .transaction-chevron {
+            transform: rotate(180deg);
+        }
+        .transaction-detail {
+            display: none;
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 8px;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .transaction-detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .transaction-detail-label {
+            color: rgba(0,0,0,0.8);
+        }
+        .transaction-detail-val {
+            color: #7c7c7c;
+            text-align: right;
+        }
+        .tag-query {
+            border: 0.5px solid rgba(0,0,0,0.8);
+            border-radius: 14px;
+            padding: 2px 12px;
+            font-size: 12px;
+            color: #1c1c1c;
+        }
+
+        /* Status Pills (Future use) */
+        .status-pill {
+            display: inline-flex;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-pill.success { background-color: #e6f7f0; color: #00a854; }
+
+        /* Scroll Cards (Carousel) */
+        .scroll-wrapper {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 4px 8px 4px; /* padding ensures scrollbar and shadows are not cut off */
+            max-width: 100%;
+            -ms-overflow-style: none; /* Hide scrollbar for IE */
+            scrollbar-width: none;    /* Hide scrollbar for Firefox */
+        }
+        
+        .scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-card {
+            width: 198px;
+            flex-shrink: 0;
+            background-color: var(--chatbot-white);
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .card-image {
+            width: 178px;
+            height: 111px;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            margin-bottom: 9px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-title, .card-btn {
+            width: 100%;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border-bottom: 1px solid #e1efef;
+            flex-shrink: 0;
+        }
+
+        .card-btn {
+            font-weight: bold;
+            color: var(--chatbot-black);
+            cursor: pointer;
+        }
+
+        .card-btn.no-border {
+            border-bottom: none;
+        }
+
+        /* Filter Dropdown */
+        .filter-dropdown {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            min-width: 120px;
+            margin-top: 4px;
+        }
+        .dropdown-option {
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #1c1c1c;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .dropdown-option:last-child {
+            border-bottom: none;
+        }
+        .dropdown-option:hover {
+            background-color: #f5f8f8;
+        }
+
+        /* Date Modal */
+        .date-picker-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .date-picker-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1c1c1c;
+            text-align: center;
+        }
+        .date-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .date-input-group label {
+            font-size: 14px;
+            color: #7c7c7c;
+        }
+        .date-input-group input {
+            padding: 8px 12px;
+            border: 1px solid #acacac;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .modal-btn {
+            flex: 1;
+            height: 40px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-btn.confirm {
+            background: #007a7a;
+            color: white;
+            border: none;
+        }
+        .modal-btn.cancel {
+            background: #f0f0f0;
+            color: #595959;
+            border: none;
+        }
+
+        /* Payment Amount Selection Cards */
+        .payment-scroll-container {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+        .payment-scroll-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari */
+        }
+
+        .payment-card {
+            background-color: var(--chatbot-white);
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            width: 198px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .payment-card-title {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #e1efef;
+            font-size: 16px;
+            font-weight: bold;
+            color: #007a7a;
+            text-align: center;
+        }
+
+        .payment-card-info {
+            background-color: #e1efef;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            flex-grow: 1;
+            min-height: 122px;
+        }
+
+        .payment-currency {
+            font-size: 14px;
+            color: #1c1c1c;
+        }
+
+        .payment-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007a7a;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        .payment-amount-input-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .payment-amount-input {
+            width: 120px;
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            font-weight: bold;
+            color: rgba(0,122,122,0.7);
+            text-align: center;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            outline: none;
+        }
+
+        .payment-amount-input::placeholder {
+            color: rgba(0,122,122,0.5);
+        }
+
+        .payment-disclaimer {
+            font-size: 14px;
+            color: #1c1c1c;
+            text-align: center;
+            line-height: 1.5;
+            margin-top: 5px;
+            white-space: pre-wrap;
+        }
+
+        .payment-card-btn-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-card-btn {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1c1c1c;
+            border-top: 1px solid #e1efef;
+            cursor: pointer;
+            background: var(--chatbot-white);
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            width: 100%;
+            font-family: inherit;
+        }
+        
+        .payment-card-btn:hover {
+            background-color: #f5f8f8;
+        }
+        
+        .icon-20 { width: 20px; height: 20px; }
+
+        /* Barcode Dialogue Styles */
+        .barcode-card {
+            background-color: var(--chatbot-white);
+            border-radius: 16px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 295px;
+        }
+
+        .barcode-title {
+            color: #0f62fe;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .barcode-subtitle {
+            font-size: 16px;
+            font-weight: bold;
+            color: rgba(0,0,0,0.8);
+        }
+
+        .barcode-details {
+            font-size: 16px;
+            color: rgba(0,0,0,0.8);
+            line-height: 1.5;
+        }
+
+        .amount-highlight {
+            background-color: #e1efef;
+            border: 0.5px solid #bddada;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #1c1c1c;
+        }
+
+        .store-icons-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+        .store-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 2px;
+            object-fit: cover;
+        }
+
+        .barcodes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 16px 0;
+            align-items: center;
+        }
+
+        .barcode-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .barcode-img-placeholder {
+            width: 100%;
+            height: 61px;
+            background: white;
+            border: 7px solid white;
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            overflow: hidden;
+        }
+        .barcode-stripe { background: black; height: 100%; }
+
+        .barcode-text {
+            font-size: 14px;
+            color: #1c1c1c;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .download-barcode-btn {
+            background-color: #cbe9e9;
+            border: 0.5px solid #85d0ce;
+            border-radius: 40px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #005154;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .download-barcode-btn:hover { background-color: #b8dede; }
+
+        /* Download Success Modal */
+        .download-success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+        .download-success-modal {
+            background: white;
+            border-radius: 24px;
+            width: 327px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+        .success-gif-placeholder {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .success-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1c1c1c;
+        }
+        .success-confirm-btn {
+            width: 100%;
+            height: 48px;
+            background: #76cdcd;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Typing Dots Animation */
+        .typing-bubble {
+            background-color: var(--chatbot-white);
+            border-radius: 12px;
+            box-shadow: 0px 0px 8px 0px rgba(116,157,152,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            padding: 8px 12px;
+            margin-bottom: 4px;
+        }
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .typing-dots .dot {
+            width: 6px;
+            height: 6px;
+            background-color: #acacac;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dots .dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dots .dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* 共用 Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            background-color: orange;
+        }
+        
+        /* 內容置中 */
+        .overlay-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        /* GIF 預留 */
+        .overlay-gif-placeholder {
+            width: 120px;
+            height: 120px;
+            background: #eaeaea; /* placeholder */
+            border-radius: 12px;
+        }
+        
+        /* Loading 文字 */
+        .overlay-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1c1c1c;
+        }
+        
+        /* Overlay 1：白色半透明 */
+        .overlay-loading {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Overlay 2：滿版圖片 */
+        .overlay-image {
+            background: url('YOUR_BG_IMAGE.jpg') center / cover no-repeat;
+            background-color: orange;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <main class="app-container" aria-label="智能客服區域">
+        
+        <!-- 1. Navbar -->
+        <header class="nav" aria-label="頂部導覽列">
+            <!-- 漢堡選單(按鈕 + span 動畫) -->
+            <button class="icon icon-24" id="btnHamburger" aria-label="開啟選單" aria-expanded="false" aria-controls="hamburgerMenu" tabindex="0">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+            <!-- 標題 -->
+            <h1 class="nav-title" tabindex="0">玉山銀行客服嘿熊</h1>
+            <!-- 左側操作區 -->
+            <div class="action-wrapper">
+                <!-- 字體縮放(icon) -->
+                <button class="icon icon-24" aria-label="調整字體大小" tabindex="0">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-font-size.png" alt="字體" class="lazyload">
+                </button>
+                <!-- 登出(icon) -->
+                <button class="icon icon-24" id="logoutBtn" aria-label="登出" tabindex="0">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-logout.png" alt="登出" class="lazyload">
+                </button>
+
+            </div>
+        </header>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" id="hamburgerMenu" aria-hidden="true">
+            <div class="menu-item" tabindex="0" role="button">
+                <div class="icon icon-24" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-star.png" alt="" class="lazyload">
+                </div>
+                <span class="menu-text">給小玉評分與鼓勵</span>
+            </div>
+            <div class="menu-item" tabindex="0" role="button">
+                <div class="icon icon-24" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-globe.png" alt="" class="lazyload">
+                </div>
+                <span class="menu-text">English Service</span>
+            </div>
+            <div class="menu-item flex-col">
+                <div class="menu-item-header">
+                    <div class="icon icon-24" aria-hidden="true">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-user.png" alt="" class="lazyload">
+                    </div>
+                    <span class="menu-text">個資運用說明</span>
+                </div>
+                <div class="menu-privacy-text" tabindex="0">
+                    為保障您的權益，請詳細閱讀「<a href="#">個人資料運用法定告知事項</a>」、「<a href="#">隱私權保護措施</a>」，如您已充分了解並同意前述告知事項，請繼續進行對談服務。
+                </div>
+                <div class="btn-wrapper">
+                    <button class="btn-primary" id="agreeBtn" tabindex="0">同意並繼續服務</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Announce (浮動區塊) -->
+        <section class="Anounce" id="announceBlock" aria-label="系統公告">
+            <!-- 大聲公(icon) -->
+            <div class="icon icon-22" aria-hidden="true">
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-megaphone.png" alt="" class="lazyload">
+            </div>
+            <!-- 訊息 -->
+            <div class="message" tabindex="0">
+                <span>看破詐騙，防詐資訊：【<a href="#" aria-label="點我看防詐資訊">點我看</a>】</span>
+            </div>
+            <!-- 關閉(icon) -->
+            <button class="icon icon-44" id="btnCloseAnnounce" aria-label="關閉公告" tabindex="0">
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-close.png" alt="關閉" class="lazyload">
+            </button>
+        </section>
+
+        <!-- 3. 對話區域 -->
+        <!-- 預留區塊 -->
+        <section class="chat-container" aria-label="對話內容" tabindex="0">
+
+            <!-- Bot Message Group 1 -->
+            <div class="msg-row bot is-hidden" id="botMsg1">
+                <!-- Avatar -->
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-bot-avatar.png" alt="" class="lazyload">
+                </div>
+                <!-- Messages container -->
+                <div class="msg-content">
+                    
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <!-- Text Bubble 1 -->
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        ＯＯＯ 您好，<br>
+                        您已從 LINE 帳號登入！
+                    </div>
+
+                    <!-- Text Bubble 2 -->
+                    <div class="msg-bubble" tabindex="0">
+                        LINE pay 最高4.5% → <a href="#" class="link-teal bold">申辦 Unicard</a><br>
+                        普發現金一萬元 → <a href="#" class="link-teal bold">立即了解</a>
+                    </div>
+
+                    <!-- Text Bubble 3 -->
+                    <div class="msg-bubble" tabindex="0">
+                        近期詐騙集團偽冒本行名義寄送帳戶異常通知，<span class="text-red bold">本行「不會」透過簡訊、EMAIL通知</span>，要求輸入信用卡卡號及個人資料，若有任何疑慮，請立即撥打165反詐騙專線或致電本行客服專線<br>
+                        → <a href="#" class="link-teal bold">更多常見詐騙手法</a><br>
+                        → <a href="#" class="link-teal bold">辨識玉山官方網站</a>
+                    </div>
+
+                    <!-- Horizontal Scroll Cards -->
+                    <div class="scroll-wrapper" tabindex="0" aria-label="可左右滑動的服務卡片">
+                        
+                        <!-- Card 1 -->
+                        <div class="scroll-card">
+                            <div class="card-image"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="card-demo1.png" alt="" class="lazyload"></div>
+                            <div class="card-title text-green bold">信用卡服務</div>
+                            <div class="card-btn" id="cardBillDetailBtn">帳單/消費明細</div>
+                            <div class="card-btn">消費有問題</div>
+                            <div class="card-btn">旅遊活動滿額贈</div>
+                            <div class="card-btn no-border">保費分期活動</div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="scroll-card">
+                            <div class="card-image"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="card-demo2.png" alt="" class="lazyload"></div>
+                            <div class="card-title text-green bold">熱門服務</div>
+                            <div class="card-btn">信貸優惠</div>
+                            <div class="card-btn">分期活動</div>
+                            <div class="card-btn">預借現金</div>
+                            <div class="card-btn no-border">綁定LINE抽好禮</div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="scroll-card">
+                            <div class="card-image"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="card-demo3.png" alt="" class="lazyload"></div>
+                            <div class="card-title text-green bold">銀行服務</div>
+                            <div class="card-btn">變更資料</div>
+                            <div class="card-btn">數位帳戶</div>
+                            <div class="card-btn">跨境網購</div>
+                            <div class="card-btn no-border">外匯業務</div>
+                        </div>
+
+                    </div>
+
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 1-->
+            <div class="msg-row user is-hidden" id="userMsg1">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        帳單/消費明細
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+            
+            <!-- Bot Message Group 2 -->
+            <div class="msg-row bot is-hidden" id="botMsg2">
+                <!-- Avatar -->
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <!-- Messages container -->
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        快速查詢本期帳單與近期消費明細
+                        <div class="msg-actions">
+                            <button class="msg-action-btn primary" id="currentBillBtn">本期帳單</button>
+                            <button class="msg-action-btn secondary">未出帳明細</button>
+                            <button class="msg-action-btn secondary">近30天消費明細</button>
+                        </div>
+                    </div>
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1448adcb5ab091e409862b9c212b84276c2e96cb.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/f4bce35e57cec192f44ba7413ffd526b9f2cbab5.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 2 -->
+            <div class="msg-row user is-hidden" id="userMsg2">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        本期帳單
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 3 -->
+            <div class="msg-row bot is-hidden" id="botMsg3">
+                <!-- Avatar -->
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <!-- Messages container -->
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        為維護您的權益，此服務需要使用正卡人的資料完成身分認證，才能幫您查詢或處理！
+                    </div>
+                    <div class="msg-bubble" tabindex="0">
+                        歡迎使用玉山行動銀行APP進行多種身份驗證選擇，體驗更流暢的體驗！
+                    </div>
+                    <div class="action-cards-grid">
+                        <button class="action-card bg-teal" id="appVerifyBtn" tabindex="0">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1a0298ea1fa995f10723f89a1acd47749f183971.svg" class="action-card-icon lazyload" alt="">
+                            <div class="action-card-text">玉山銀行<br>APP驗證</div>
+                        </button>
+                        <button class="action-card" tabindex="0">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/21f79e1d9a028f96c575b10d45aacface7ef6acc.svg" class="action-card-icon lazyload" alt="">
+                            <div class="action-card-text">簡訊驗證</div>
+                        </button>
+                    </div>
+                    <div class="msg-bubble" tabindex="0">
+                        ＊溫馨提醒：若尚未開通玉山數位帳戶的顧客請先進行 <a href="#" class="link-teal bold">立即開戶</a> 並 <a href="#" class="link-teal bold">下載安裝玉山行銀APP</a>
+                        <div class="msg-actions">
+                            <button class="msg-action-btn secondary">下次查詢，繼續詢問其他問題</button>
+                        </div>
+                    </div>
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1448adcb5ab091e409862b9c212b84276c2e96cb.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/f4bce35e57cec192f44ba7413ffd526b9f2cbab5.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 3 -->
+            <div class="msg-row user is-hidden" id="userMsg3">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        玉山銀行APP驗證
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 4: Jumping -->
+            <div class="msg-row bot is-hidden" id="botMsg4">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        黑熊跳轉中，請稍後
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 5: Bill Summary Card -->
+            <div class="msg-row bot is-hidden" id="botMsg5">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <div class="bill-card">
+                            <div class="bill-title">2026年3月帳單</div>
+                            <div class="bill-info-text">
+                                帳單結帳日：2025/02/13<br>
+                                繳款截止日：2025/03/03
+                            </div>
+                            <div class="bold" style="font-size: 16px; color: rgba(0,0,0,0.8);">台幣帳單 ( TWD )</div>
+                            
+                            <div class="bill-highlight">
+                                <div class="bill-main-amount">
+                                    <div class="bill-label">本期帳單金額</div>
+                                    <div class="bill-value-large">$47,884</div>
+                                </div>
+                                <div class="bill-sub-info">
+                                    扣繳帳號：台新銀行,末四碼4099
+                                </div>
+                                <div class="bill-detail-list">
+                                    <div class="bill-detail-row">
+                                        <span>台幣最低應繳</span>
+                                        <span class="bold">TWD 7,317</span>
+                                    </div>
+                                    <div class="bill-detail-row">
+                                        <div class="bill-detail-label">
+                                            <span>已繳金額</span>
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/0670d605dd1fb92d1e70b7de15f54554036d6cad.svg" class="icon-q lazyload" alt="說明">
+                                        </div>
+                                        <span>TWD 0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bill-btn-group">
+                                <button class="bill-btn primary" id="paymentRecordBtn">
+                                    <span>繳款紀錄</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/443de7a315e8e34db00cbb3abce13ecc4d85a6ac.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                                <button class="bill-btn secondary">
+                                    <span>帳單明細</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/443de7a315e8e34db00cbb3abce13ecc4d85a6ac.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Actions -->
+                    <div class="msg-bubble" tabindex="0">
+                        <div class="msg-actions" style="margin-top: 0;">
+                            <button class="msg-action-btn secondary">立即繳款</button>
+                            <button class="msg-action-btn secondary">查詢未出帳明細</button>
+                            <button class="msg-action-btn secondary" style="background-image: linear-gradient(90deg, #cbe9e9 0%, #cbe9e9 100%), linear-gradient(90deg, #c1e4e3 0%, #e1efef 100%);">貼心提醒</button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1448adcb5ab091e409862b9c212b84276c2e96cb.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/f4bce35e57cec192f44ba7413ffd526b9f2cbab5.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 5 -->
+            <div class="msg-row user is-hidden" id="userMsg5">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        繳款紀錄
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 6: Payment Record Detail -->
+            <div class="msg-row bot is-hidden" id="botMsg6">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <div class="bill-card">
+                            <div class="bill-title" style="color: #0f62fe;">繳款紀錄</div>
+                            <div class="bold" style="font-size: 16px; color: rgba(0,0,0,0.8);">台幣帳單 ( TWD )</div>
+                            
+                            <div class="bill-highlight">
+                                <div class="bill-main-amount">
+                                    <div class="bill-label">上期應繳金額</div>
+                                    <div class="bill-value-large">$50,133</div>
+                                </div>
+                                <div class="bill-main-amount" style="flex-direction: row; justify-content: center; gap: 7px;">
+                                    <div class="pill-bordered red">已申請自動扣繳</div>
+                                    <div class="pill-bordered teal">
+                                        <span>繳款完成</span>
+                                        <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/9eb65410884ecda4862b81132655cc8269d80b49.svg" class="icon-s lazyload" alt="">
+                                    </div>
+                                </div>
+                                <div class="bill-detail-list">
+                                    <div class="bill-detail-row">
+                                        <span>調整溢付款</span>
+                                        <span>TWD 0</span>
+                                    </div>
+                                    <div class="bill-detail-row">
+                                        <span>自動轉帳繳款</span>
+                                        <span>TWD -30,696</span>
+                                    </div>
+                                    <div class="bill-detail-row text-red bold">
+                                        <span>上期未繳金額</span>
+                                        <span>TWD 20,133</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bill-btn-group">
+                                <button class="bill-btn primary" id="statementDetailBtn">
+                                    <span>帳單明細</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/443de7a315e8e34db00cbb3abce13ecc4d85a6ac.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                                <button class="bill-btn secondary">
+                                    <span>本期帳單</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/443de7a315e8e34db00cbb3abce13ecc4d85a6ac.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Actions Grid -->
+                    <div class="msg-bubble" tabindex="0">
+                        <div class="msg-actions" style="margin-top: 0;">
+                            <button class="msg-action-btn secondary">查詢未出帳明細</button>
+                            <button class="msg-action-btn secondary" style="background-image: linear-gradient(90deg, #cbe9e9 0%, #cbe9e9 100%), linear-gradient(90deg, #c1e4e3 0%, #e1efef 100%);">貼心提醒</button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1448adcb5ab091e409862b9c212b84276c2e96cb.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/f4bce35e57cec192f44ba7413ffd526b9f2cbab5.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 6 -->
+            <div class="msg-row user is-hidden" id="userMsg6">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        帳單明細
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 7: Transaction Details -->
+            <div class="msg-row bot is-hidden" id="botMsg7">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <div class="bill-card">
+                            <div class="bill-title" style="color: #0f62fe;">帳單明細</div>
+                            
+                            <div class="transaction-search">
+                                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/951118479a3e798742ed1f3464e61bbfe26ba499.svg" style="width: 32px; height: 32px;" class="lazyload" alt="">
+                                <input type="text" placeholder="請輸入商店名稱或金額" id="transactionSearchInput">
+                            </div>
+
+                            <div class="filter-pills">
+                                <div class="filter-pill" data-type="card">
+                                    <span class="pill-text">卡別</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/4d98da096290d1c2e70ca120ddbb17ea10561911.svg" class="pill-icon lazyload" style="transform: rotate(-90deg);" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" data-type="holder">
+                                    <span class="pill-text">正附卡</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/4d98da096290d1c2e70ca120ddbb17ea10561911.svg" class="pill-icon lazyload" style="transform: rotate(-90deg);" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" data-type="date">
+                                    <span class="pill-text">日期</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/4d98da096290d1c2e70ca120ddbb17ea10561911.svg" class="pill-icon lazyload" style="transform: rotate(-90deg);" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" data-type="currency">
+                                    <span class="pill-text">幣別</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/4d98da096290d1c2e70ca120ddbb17ea10561911.svg" class="pill-icon lazyload" style="transform: rotate(-90deg);" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" id="clearFilters" style="border: 1px solid #262626;">
+                                    <span class="pill-text">取消篩選</span>
+                                </div>
+                            </div>
+
+                            <div style="max-height: 450px; overflow-y: auto; overflow-x: hidden;" id="transactionList">
+                                <div class="year-tag">2026</div>
+                                
+                                <!-- Item 1 -->
+                                <div class="transaction-item" data-name="熊本熊卡國內消費1%現金回饋">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">熊本熊卡國內消費1%現金回饋</div>
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/5ae3454916369e20747cb5722845c4c2596086fa.svg" class="transaction-chevron lazyload" style="transform: rotate(0deg);" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount">-21</span></div>
+                                            <div>02/18</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/18</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">8,030</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 2 -->
+                                <div class="transaction-item" data-name="熊本熊卡Paypay消費3%回饋">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">熊本熊卡Paypay消費3%回饋</div>
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/5ae3454916369e20747cb5722845c4c2596086fa.svg" class="transaction-chevron lazyload" style="transform: rotate(0deg);" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount">-240</span></div>
+                                            <div>02/18</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <!-- Mock details for Item 2 -->
+                                        <div class="transaction-detail-row"><div class="bold transaction-detail-label">交易明細</div></div>
+                                        <div class="transaction-detail-row"><div class="transaction-detail-label">交易卡別</div><div class="transaction-detail-val">Unicard-正卡</div></div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 3 -->
+                                <div class="transaction-item" data-name="義美股份有限公司-永安門市">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">義美股份有限公司-永安門市</div>
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/5ae3454916369e20747cb5722845c4c2596086fa.svg" class="transaction-chevron lazyload" style="transform: rotate(0deg);" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">40</span></div>
+                                            <div>02/17</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <!-- Mock details for Item 3 -->
+                                        <div class="transaction-detail-row"><div class="bold transaction-detail-label">交易明細</div></div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 4 -->
+                                <div class="transaction-item" data-name="誠品信義旗艦店">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">誠品信義旗艦店</div>
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/5ae3454916369e20747cb5722845c4c2596086fa.svg" class="transaction-chevron lazyload" style="transform: rotate(0deg);" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">8,030</span></div>
+                                            <div>02/17</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <!-- Mock details for Item 4 -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bill-btn-group" style="padding-top: 10px; border-top: 1px solid #eee; margin-top: 10px;">
+                                <button class="bill-btn secondary" style="background-color: #cbe9e9;">
+                                    <span>本期帳單</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/443de7a315e8e34db00cbb3abce13ecc4d85a6ac.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                                <button class="bill-btn secondary" style="background-color: #cbe9e9;">
+                                    <span>繳款紀錄</span>
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/443de7a315e8e34db00cbb3abce13ecc4d85a6ac.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bot Action Grid 2 -->
+                    <div class="msg-bubble" tabindex="0">
+                        <div class="msg-actions" style="margin-top: 0;">
+                            <button class="msg-action-btn primary" id="payNowBtn" style="background-color: #76cdcd;">立即繳款</button>
+                            <button class="msg-action-btn secondary">查詢未出帳明細</button>
+                            <button class="msg-action-btn secondary" style="background-image: linear-gradient(90deg, #cbe9e9 0%, #cbe9e9 100%), linear-gradient(90deg, #c1e4e3 0%, #e1efef 100%);">貼心提醒</button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1448adcb5ab091e409862b9c212b84276c2e96cb.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/f4bce35e57cec192f44ba7413ffd526b9f2cbab5.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 7 -->
+            <div class="msg-row user is-hidden" id="userMsg7">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        立即繳款
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 8: Payment Amount Selection -->
+            <div class="msg-row bot is-hidden" id="botMsg8">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <p class="bold">請選擇您要繳納的金額與方式</p>
+                        <p style="margin-top: 10px;">＊繳款金額高於 20,000 元僅能線上繳款，低於 20,000 元則可線上或至超商繳款。</p>
+                    </div>
+                    
+                    <div class="payment-scroll-container">
+                        <!-- Card 1: Remaining Balance -->
+                        <div class="payment-card">
+                            <div class="payment-card-title">尚須繳納金額</div>
+                            <div class="payment-card-info">
+                                <div class="payment-currency">台幣TWD</div>
+                                <div class="payment-amount">$47,884</div>
+                            </div>
+                            <button class="payment-card-btn">立即線上繳款</button>
+                        </div>
+                        
+                        <!-- Card 2: Minimum Due -->
+                        <div class="payment-card">
+                            <div class="payment-card-title">最低應繳金額</div>
+                            <div class="payment-card-info">
+                                <div class="payment-currency">台幣TWD</div>
+                                <div class="payment-amount">$7,317</div>
+                            </div>
+                            <div class="payment-card-btn-group">
+                                <button class="payment-card-btn" id="barcodePayBtn" style="border-bottom: 1px solid #e1efef;">超商條碼繳款</button>
+                                <button class="payment-card-btn">立即線上繳款</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 3: Self-input -->
+                        <div class="payment-card">
+                            <div class="payment-card-title">自行輸入金額</div>
+                            <div class="payment-card-info">
+                                <div class="payment-currency">台幣TWD</div>
+                                <div class="payment-amount-input-wrapper">
+                                    <input type="text" class="payment-amount-input" id="selfInputAmount" placeholder="請輸入金額">
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/02f8daaaeb4467970754c6c894b2c2e09bcf24b4.svg" class="icon-20 lazyload" alt="編輯">
+                                </div>
+                                <div class="payment-disclaimer">＊未繳金額將計算循環利息<br>謹慎理財 信用無價</div>
+                            </div>
+                            <div class="payment-card-btn-group" id="selfInputBtns">
+                                <button class="payment-card-btn" id="btnStorePay" style="display: none; border-bottom: 1px solid #e1efef;">超商條碼繳款</button>
+                                <button class="payment-card-btn" id="btnOnlinePay" style="display: none;">立即線上繳款</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 8: 超商條碼繳款 -->
+            <div class="msg-row user is-hidden" id="userMsg8">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        超商條碼繳款(最低應繳金額)
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 9: Barcode Download Dialogue -->
+            <div class="msg-row bot is-hidden"  id="botMsg9">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/aa15cec250dccfc8e1d73cc29e33145cc122c807.png" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="barcode-card">
+                        <div class="barcode-title">超商條碼繳款</div>
+                        <div class="barcode-subtitle">2026年3月帳單</div>
+                        <div class="barcode-details">
+                            帳單結帳日：2025/02/13<br>
+                            繳款截止日：2025/03/03
+                        </div>
+                        <div class="amount-highlight">
+                            <span>TWD</span>
+                            <span class="bold">7,317</span>
+                        </div>
+                        <div class="barcode-subtitle">適用超商</div>
+                        <div class="store-icons-container">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/07ce215905abd3dff2ef2e0deb9a04d81e7c0a19.png" class="store-icon lazyload" alt="7-11">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/091654090ecd54a38492dc074d25be6cceb1c460.png" class="store-icon lazyload" alt="FamilyMart">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/caad7d8acbc866dc7ebdc0854394ede2be6aed0b.png" class="store-icon lazyload" alt="OK">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/2d04e570e35c7992632735bba5cc44d54a2914ec.png" class="store-icon lazyload" alt="Hi-Life">
+                        </div>
+                        <div class="barcodes-container">
+                            <!-- Barcode 1 -->
+                            <div class="barcode-item">
+                                <div class="barcode-img-placeholder">
+                                    <div class="barcode-stripe" style="width: 1px;"></div>
+                                    <div class="barcode-stripe" style="width: 5px;"></div>
+                                    <div class="barcode-stripe" style="width: 9px;"></div>
+                                    <div class="barcode-stripe" style="width: 7px;"></div>
+                                    <div class="barcode-stripe" style="width: 22px;"></div>
+                                    <div class="barcode-stripe" style="width: 10px;"></div>
+                                    <div class="barcode-stripe" style="width: 2px;"></div>
+                                    <div class="barcode-stripe" style="width: 1px;"></div>
+                                    <div class="barcode-stripe" style="width: 2px;"></div>
+                                    <div class="barcode-stripe" style="width: 1px;"></div>
+                                </div>
+                                <div class="barcode-text">120419C1E</div>
+                            </div>
+                            <!-- Barcode 2 -->
+                            <div class="barcode-item">
+                                <div class="barcode-img-placeholder">
+                                    <div class="barcode-stripe" style="width: 2px;"></div>
+                                    <div class="barcode-stripe" style="width: 10px;"></div>
+                                    <div class="barcode-stripe" style="width: 4px;"></div>
+                                    <div class="barcode-stripe" style="width: 7px;"></div>
+                                    <div class="barcode-stripe" style="width: 10px;"></div>
+                                    <div class="barcode-stripe" style="width: 1px;"></div>
+                                    <div class="barcode-stripe" style="width: 5px;"></div>
+                                </div>
+                                <div class="barcode-text">1975093618000000</div>
+                            </div>
+                            <!-- Barcode 3 -->
+                            <div class="barcode-item">
+                                <div class="barcode-img-placeholder">
+                                    <div class="barcode-stripe" style="width: 1px;"></div>
+                                    <div class="barcode-stripe" style="width: 2px;"></div>
+                                    <div class="barcode-stripe" style="width: 5px;"></div>
+                                    <div class="barcode-stripe" style="width: 10px;"></div>
+                                    <div class="barcode-stripe" style="width: 2px;"></div>
+                                    <div class="barcode-stripe" style="width: 1px;"></div>
+                                    <div class="barcode-stripe" style="width: 7px;"></div>
+                                </div>
+                                <div class="barcode-text">03209000006671</div>
+                            </div>
+                        </div>
+                        <button class="download-barcode-btn" id="btnDownloadBarcode">下載條碼</button>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0" style="margin-top: 10px;">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/1448adcb5ab091e409862b9c212b84276c2e96cb.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="http://localhost:3845/assets/f4bce35e57cec192f44ba7413ffd526b9f2cbab5.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 4. 對話輸入框 (InputArea) -->
+        <footer class="InputArea" aria-label="對話輸入區">
+            <!-- 開合(按鈕 + span 動畫) -->
+            <button class="expand-btn" id="btnExpand" aria-label="展開附加功能" tabindex="0">
+                <span class="expand-icon">
+                    <span class="expand-line vertical"></span>
+                    <span class="expand-line horizontal"></span>
+                </span>
+            </button>
+            <!-- input -->
+            <div class="input-wrapper">
+                <input type="text" placeholder="請輸入文字" aria-label="輸入文字訊息" tabindex="0">
+            </div>
+            <!-- 送出(icon) -->
+            <button class="icon icon-32" aria-label="送出訊息" tabindex="0">
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-send.png" alt="送出" class="lazyload">
+            </button>
+        </footer>
+
+        <!-- 5. 附加功能面板 (Action Panel) -->
+        <div class="action-panel" id="actionPanel" aria-label="更多功能">
+            <div class="action-grid">
+                <button class="action-item" aria-label="帳單自動扣款" tabindex="0">
+                    <div class="action-item-icon"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-bill.png" alt="" class="lazyload"></div>
+                    <span class="action-item-text">帳單自動扣款</span>
+                </button>
+                <button class="action-item" aria-label="玉山卡超好用" tabindex="0">
+                    <div class="action-item-icon"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-card.png" alt="" class="lazyload"></div>
+                    <span class="action-item-text">玉山卡超好用</span>
+                </button>
+                <button class="action-item" aria-label="貸款限時優惠" tabindex="0">
+                    <div class="action-item-icon"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-loan.png" alt="" class="lazyload"></div>
+                    <span class="action-item-text">貸款限時優惠</span>
+                </button>
+                <button class="action-item" aria-label="卡友必備神器" tabindex="0">
+                    <div class="action-item-icon"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-privilege.png" alt="" class="lazyload"></div>
+                    <span class="action-item-text">卡友必備神器</span>
+                </button>
+                <button class="action-item" aria-label="加個LINE" tabindex="0">
+                    <div class="action-item-icon"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-line.png" alt="" class="lazyload"></div>
+                    <span class="action-item-text">加個LINE</span>
+                </button>
+                <button class="action-item" aria-label="加入數位會員" tabindex="0">
+                    <div class="action-item-icon"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="icon-digital.png" alt="" class="lazyload"></div>
+                    <span class="action-item-text">加入數位會員</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- jQuery & JavaScript for lazy loading images via data-src -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            // Hamburger Menu Interaction
+            $('#btnHamburger').on('click', function() {
+                const menu = $('#hamburgerMenu');
+                const isExpanded = menu.is(':visible');
+                
+                if (isExpanded) {
+                    menu.slideUp(200);
+                    $(this).attr('aria-expanded', 'false');
+                    menu.attr('aria-hidden', 'true');
+                    $(this).attr('aria-label', '開啟選單');
+                    $(this).removeClass('is-active');
+                } else {
+                    menu.slideDown(200);
+                    $(this).attr('aria-expanded', 'true');
+                    menu.attr('aria-hidden', 'false');
+                    $(this).attr('aria-label', '關閉選單');
+                    $(this).addClass('is-active');
+                }
+            });
+
+            // Close Menu when clicking Agree
+            $('#agreeBtn').on('click', function() {
+                $('#hamburgerMenu').slideUp(200);
+                $('#btnHamburger').attr('aria-expanded', 'false').attr('aria-label', '開啟選單').removeClass('is-active');
+                $('#hamburgerMenu').attr('aria-hidden', 'true');
+            });
+
+            // Remove Announce Block Completely
+            $('#btnCloseAnnounce').on('click', function() {
+                $('#announceBlock').remove();
+            });
+
+            // Expand Button Interaction
+            $('#btnExpand').on('click', function() {
+                $(this).toggleClass('is-active');
+                if ($(this).hasClass('is-active')) {
+                    $(this).attr('aria-label', '收起附加功能');
+                    $('#actionPanel').slideDown(250);
+                } else {
+                    $(this).attr('aria-label', '展開附加功能');
+                    $('#actionPanel').slideUp(250);
+                }
+            });
+
+            // Lazy load implementation using IntersectionObserver
+            if ('IntersectionObserver' in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = $(entry.target);
+                            lazyImage.attr('src', lazyImage.attr('data-src'));
+                            lazyImage.removeClass('lazyload');
+                            lazyImageObserver.unobserve(lazyImage[0]);
+                        }
+                    });
+                });
+
+                $('.lazyload').each(function() {
+                    lazyImageObserver.observe(this);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                $('.lazyload').each(function() {
+                    $(this).attr('src', $(this).attr('data-src'));
+                    $(this).removeClass('lazyload');
+                });
+            }
+
+            // Transaction Detail Expansion
+            $(document).on('click', '.transaction-item-header', function() {
+                const item = $(this).closest('.transaction-item');
+                const chevron = item.find('.transaction-chevron');
+                item.toggleClass('expanded');
+                item.find('.transaction-detail').slideToggle(300);
+            });
+
+            // Filter Dropdown Logic
+            const filterOptions = {
+                card: ["熊本熊卡", "Unicard", "世界卡", "悠遊聯名卡"],
+                holder: ["正卡", "附卡"],
+                currency: ["TWD", "JPY", "USD", "EUR"]
+            };
+
+            const filterDefaults = {
+                card: "卡別",
+                holder: "正附卡",
+                date: "日期",
+                currency: "幣別"
+            };
+
+            // Toggle Dropdown
+            $(document).on('click', '.filter-pill:not(#clearFilters, [data-type="date"])', function(e) {
+                e.stopPropagation();
+                const type = $(this).data('type');
+                $('.filter-dropdown').remove(); // Close existing
+
+                const dropdown = $('<div class="filter-dropdown"></div>');
+                filterOptions[type].forEach(opt => {
+                    dropdown.append(`<div class="dropdown-option" data-value="${opt}">${opt}</div>`);
+                });
+
+                $(this).after(dropdown);
+                dropdown.fadeIn(200);
+
+                // Handle option selection
+                const pill = $(this);
+                dropdown.find('.dropdown-option').on('click', function(e) {
+                    e.stopPropagation();
+                    const val = $(this).data('value');
+                    pill.addClass('active');
+                    pill.find('.pill-text').text(val);
+                    dropdown.fadeOut(200, function() { $(this).remove(); });
+                    filterTransactions();
+                });
+            });
+
+            // Date Picker Logic
+            $(document).on('click', '.filter-pill[data-type="date"]', function() {
+                $('#datePickerOverlay').css('display', 'flex').hide().fadeIn(200);
+            });
+
+            $('#cancelDatePicker').on('click', function() {
+                $('#datePickerOverlay').fadeOut(200);
+            });
+
+            $('#confirmDatePicker').on('click', function() {
+                const start = $('#startDate').val();
+                const end = $('#endDate').val();
+                if (start && end) {
+                    const pill = $('.filter-pill[data-type="date"]');
+                    pill.addClass('active');
+                    // Format date to mm/dd
+                    const s = start.split('-').slice(1).join('/');
+                    const e = end.split('-').slice(1).join('/');
+                    pill.find('.pill-text').text(`${s}-${e}`);
+                    $('#datePickerOverlay').fadeOut(200);
+                    filterTransactions();
+                } else {
+                    alert('請選擇完整日期區間');
+                }
+            });
+
+            // Close dropdowns on click outside
+            $(document).on('click', function() {
+                $('.filter-dropdown').fadeOut(200, function() { $(this).remove(); });
+            });
+
+            // Pill Close (Reset)
+            $(document).on('click', '.pill-close', function(e) {
+                e.stopPropagation();
+                const pill = $(this).closest('.filter-pill');
+                const type = pill.data('type');
+                pill.removeClass('active');
+                pill.find('.pill-text').text(filterDefaults[type]);
+                filterTransactions();
+            });
+
+            $('#clearFilters').on('click', function() {
+                $('.filter-pill').each(function() {
+                    const type = $(this).data('type');
+                    if (type) {
+                        $(this).removeClass('active');
+                        $(this).find('.pill-text').text(filterDefaults[type]);
+                    }
+                });
+                $('#transactionSearchInput').val('');
+                filterTransactions();
+            });
+
+            // Unified filter function
+            function filterTransactions() {
+                const searchVal = $('#transactionSearchInput').val().toLowerCase();
+                
+                $('.transaction-item').each(function() {
+                    const name = $(this).data('name').toLowerCase();
+                    const amountText = $(this).find('.transaction-amount').text().replace(/[^-0-9.]/g, '');
+                    
+                    let show = true;
+
+                    // Search check
+                    if (searchVal && !name.includes(searchVal) && !amountText.includes(searchVal)) {
+                        show = false;
+                    }
+
+                    // Card Filter check
+                    const cardPill = $('.filter-pill[data-type="card"]');
+                    if (cardPill.hasClass('active')) {
+                        const selected = cardPill.find('.pill-text').text();
+                        const itemCard = $(this).find('.transaction-detail-val').first().text(); 
+                        // Note: In a real app we'd have better data attributes, here we mock the check
+                        if (!itemCard.includes(selected) && name !== "熊本熊卡國內消費1%現金回饋") { // Hardcoded mock condition
+                            // show = false; // Simplified for demo
+                        }
+                    }
+
+                    if (show) $(this).show(); else $(this).hide();
+                });
+            }
+
+            // Transaction Search
+            $('#transactionSearchInput').on('keyup', filterTransactions);
+
+            // Self-input Amount Logic
+            $('#selfInputAmount').on('input', function() {
+                const rawVal = $(this).val().replace(/[^0-9]/g, '');
+                $(this).val(rawVal); // Keep only numbers
+                
+                const amount = parseInt(rawVal, 10);
+                const btnStore = $('#btnStorePay');
+                const btnOnline = $('#btnOnlinePay');
+                
+                if (rawVal && !isNaN(amount)) {
+                    btnOnline.show();
+                    if (amount <= 20000) {
+                        btnStore.show().css('border-bottom', '1px solid #e1efef');
+                        btnOnline.css('border-bottom', 'none');
+                    } else {
+                        btnStore.hide();
+                        btnOnline.css('border-bottom', 'none');
+                    }
+                } else {
+                    btnStore.hide();
+                    btnOnline.hide();
+                }
+            });
+
+            // Barcode Download Pop-up Logic
+            $('#btnDownloadBarcode').on('click', function() {
+                $('#downloadSuccessOverlay').css('display', 'flex').hide().fadeIn(200);
+            });
+
+            $('#confirmDownload').on('click', function() {
+                $('#downloadSuccessOverlay').fadeOut(200);
+            });
+        });
+
+</script>
+<script>
+        $(function () {
+          function playBotTyping($msgContent) {
+            const $typing = $msgContent.find('.typing-bubble').first();
+            const $items = $msgContent.children().not('.typing-bubble');
+        
+            // 先把除了 typing 以外的內容全部藏起來
+            $items.hide();
+        
+            // typing 先顯示
+            $typing.show();
+        
+            // 停留 2 秒後，typing 消失，其餘內容依序浮出
+            setTimeout(function () {
+              $typing.fadeOut(200, function () {
+                let index = 0;
+        
+                function showNext() {
+                  if (index < $items.length) {
+                    $items.eq(index).fadeIn(400, function () {
+                      index++;
+                      showNext();
+                    });
+                  }
+                }
+        
+                showNext();
+              });
+            }, 2000);
+          }
+        
+          // 初始化所有 bot 訊息
+          $('.msg-row.bot .msg-content').each(function () {
+            playBotTyping($(this));
+          });
+        });
+
+    </script>
+
+        <script>
+$(function () {
+    let flowTimers = [];
+
+    function addTimer(callback, delay) {
+        const timer = setTimeout(callback, delay);
+        flowTimers.push(timer);
+        return timer;
+    }
+
+    function clearAllTimers() {
+        flowTimers.forEach(function (timer) {
+            clearTimeout(timer);
+        });
+        flowTimers = [];
+    }
+
+    function showLoading() {
+        $('#loadingOverlay').fadeIn(200);
+    }
+
+    function hideLoading() {
+        $('#loadingOverlay').fadeOut(200);
+    }
+
+    function showImageOverlay() {
+        $('#imageOverlay').fadeIn(200);
+    }
+
+    function hideImageOverlay() {
+        $('#imageOverlay').fadeOut(200);
+    }
+
+    function scrollChatToBottom() {
+        const $chat = $('.chat-container');
+        $chat.stop().animate({
+            scrollTop: $chat[0].scrollHeight
+        }, 300);
+    }
+
+    function prepareBotRow($row) {
+        const $content = $row.find('.msg-content');
+        const $typing = $content.children('.typing-bubble');
+        const $others = $content.children().not('.typing-bubble');
+
+        $typing.hide();
+        $others.hide();
+    }
+
+    function showUserRow(rowId) {
+        const $row = $(rowId);
+    
+        $row
+            .removeClass('is-hidden')
+            .css('display', 'flex')
+            .hide()
+            .fadeIn(200, function () {
+                $(this).css('display', 'flex');
+                scrollChatToBottom();
+            });
+    }
+
+    function playBotRow(rowId, callback, typingDelay = 800) {
+        const $row = $(rowId);
+        const $content = $row.find('.msg-content');
+        const $typing = $content.children('.typing-bubble');
+        const $others = $content.children().not('.typing-bubble');
+    
+        $typing.hide();
+        $others.hide();
+    
+        $row
+            .removeClass('is-hidden')
+            .css('display', 'flex')
+            .hide()
+            .fadeIn(200, function () {
+                $(this).css('display', 'flex');
+    
+                $typing.fadeIn(150, function () {
+                    scrollChatToBottom();
+    
+                    addTimer(function () {
+                        $typing.fadeOut(150, function () {
+                            $others.fadeIn(200, function () {
+                                scrollChatToBottom();
+                                if (typeof callback === 'function') {
+                                    callback();
+                                }
+                            });
+                        });
+                    }, typingDelay);
+                });
+            });
+    }
+
+    function resetFlow() {
+        clearAllTimers();
+
+        hideLoading();
+        hideImageOverlay();
+
+        $('.chat-container .msg-row').hide();
+
+        $('.chat-container .msg-row.bot').each(function () {
+            prepareBotRow($(this));
+        });
+
+        $('#hamburgerMenu').show().attr('aria-hidden', 'false');
+        $('#btnHamburger').attr('aria-expanded', 'true');
+        $('#agreeBtn').show();
+
+        scrollChatToBottom();
+    }
+
+    function startFlow() {
+        $('#hamburgerMenu').fadeOut(200, function () {
+            $(this).attr('aria-hidden', 'true');
+            $('#btnHamburger').attr('aria-expanded', 'false');
+
+            playBotRow('#botMsg1');
+        });
+    }
+
+    function bindFlowEvents() {
+        $('#agreeBtn').off('click').on('click', function () {
+            $(this).hide(); 
+            startFlow();
+        });
+
+        $('#cardBillDetailBtn').off('click').on('click', function () {
+            if (!$('#botMsg1').is(':visible') || $('#userMsg1').is(':visible')) return;
+
+            showUserRow('#userMsg1');
+
+            addTimer(function () {
+                playBotRow('#botMsg2');
+            }, 300);
+        });
+
+        $('#currentBillBtn').off('click').on('click', function () {
+            if (!$('#botMsg2').is(':visible') || $('#userMsg2').is(':visible')) return;
+
+            showUserRow('#userMsg2');
+
+            addTimer(function () {
+                playBotRow('#botMsg3');
+            }, 300);
+        });
+
+        $('#appVerifyBtn').off('click').on('click', function () {
+            if (!$('#botMsg3').is(':visible') || $('#userMsg3').is(':visible')) return;
+
+            showUserRow('#userMsg3');
+
+            addTimer(function () {
+                playBotRow('#botMsg4', function () {
+                    addTimer(function () {
+                        showLoading();
+
+                        addTimer(function () {
+                            hideLoading();
+                            showImageOverlay();
+
+                            addTimer(function () {
+                                hideImageOverlay();
+                                playBotRow('#botMsg5');
+                            }, 3000);
+
+                        }, 1000);
+
+                    }, 300);
+                }, 500);
+            }, 300);
+        });
+
+        $('#paymentRecordBtn').off('click').on('click', function () {
+            if (!$('#botMsg5').is(':visible') || $('#userMsg5').is(':visible')) return;
+
+            showUserRow('#userMsg5');
+
+            addTimer(function () {
+                playBotRow('#botMsg6');
+            }, 300);
+        });
+
+        $('#statementDetailBtn').off('click').on('click', function () {
+            if (!$('#botMsg6').is(':visible') || $('#userMsg6').is(':visible')) return;
+
+            showUserRow('#userMsg6');
+
+            addTimer(function () {
+                playBotRow('#botMsg7');
+            }, 300);
+        });
+
+        $('#payNowBtn').off('click').on('click', function () {
+            if (!$('#botMsg7').is(':visible') || $('#userMsg7').is(':visible')) return;
+
+            showUserRow('#userMsg7');
+
+            addTimer(function () {
+                playBotRow('#botMsg8');
+            }, 300);
+        });
+
+        $('#barcodePayBtn').off('click').on('click', function () {
+            if (!$('#botMsg8').is(':visible') || $('#userMsg8').is(':visible')) return;
+
+            showUserRow('#userMsg8');
+
+            addTimer(function () {
+                playBotRow('#botMsg9');
+            }, 300);
+        });
+
+        $('#logoutBtn').off('click').on('click', function () {
+            resetFlow();
+        });
+    }
+
+    // 初始化
+    $('.chat-container .msg-row.bot').each(function () {
+        prepareBotRow($(this));
+    });
+
+    bindFlowEvents();
+    resetFlow();
+});
+
+
+</script>
+
+
+
+    <!-- Date Picker Overlay -->
+    <div class="date-picker-overlay" id="datePickerOverlay">
+        <div class="date-picker-modal">
+            <div class="modal-title">選擇日期區間</div>
+            <div class="date-input-group">
+                <label for="startDate">開始日期</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="date-input-group">
+                <label for="endDate">結束日期</label>
+                <input type="date" id="endDate">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="cancelDatePicker">取消</button>
+                <button class="modal-btn confirm" id="confirmDatePicker">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Success Overlay -->
+    <div class="download-success-overlay" id="downloadSuccessOverlay">
+        <div class="download-success-modal">
+            <div class="success-gif-placeholder">
+                <!-- GIF 預留位置 -->
+                <img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="success-check.gif" alt="" class="lazyload" style="width: 60px;">
+            </div>
+            <div class="success-text">已下載到相簿</div>
+            <button class="success-confirm-btn" id="confirmDownload">確認</button>
+        </div>
+    </div>
+
+    <!-- Overlay：Loading（白色半透明） -->
+    <div class="overlay overlay-loading" id="loadingOverlay">
+        <div class="overlay-content">
+            <div class="overlay-gif-placeholder"></div>
+            <div class="overlay-text">Loading...</div>
+        </div>
+    </div>
+    
+    <!-- Overlay：滿版圖片 -->
+    <div class="overlay overlay-image" id="imageOverlay">
+        <div class="overlay-content">
+            <div class="overlay-gif-placeholder"></div>
+        </div>
+    </div>
+</body>
+</html>
