@@ -353,12 +353,14 @@ $(function () {
                 $(this).css('display', 'flex');
     
                 $typing.fadeIn(150, function () {
-                    scrollChatToBottom();
+                    // scrollChatToBottom();
+                    scrollToRowTop($row);
     
                     addTimer(function () {
                         $typing.fadeOut(150, function () {
                             $others.fadeIn(200, function () {
-                                scrollChatToBottom();
+                                // scrollChatToBottom();
+                                scrollToRowTop($row);
                                 if (typeof callback === 'function') {
                                     callback();
                                 }
@@ -589,5 +591,13 @@ $(function () {
         updateNav();
     });
 });
+
+function scrollToRowTop($row) {
+    const $chat = $('.chat-container');
+
+    $chat.stop().animate({
+        scrollTop: $chat.scrollTop() + $row.position().top
+    }, 300);
+}
 
 
