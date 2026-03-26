@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玉山銀行客服嘿熊</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <main class="app-container" aria-label="智能客服區域">
+        
+        <!-- 1. Navbar -->
+        <header class="nav" aria-label="頂部導覽列">
+            <!-- 漢堡選單(按鈕 + span 動畫) -->
+            <button class="icon icon-24" id="btnHamburger" aria-label="開啟選單" aria-expanded="false" aria-controls="hamburgerMenu" tabindex="0">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+            <!-- 標題 -->
+            <h1 class="nav-title" tabindex="0">玉山銀行客服嘿熊</h1>
+            <!-- 左側操作區 -->
+            <div class="action-wrapper">
+                <!-- 字體縮放(icon) -->
+                <button class="icon icon-24" aria-label="調整字體大小" tabindex="0">
+                    <img src="images/ic_font_size.svg" alt="字體" class="lazyload">
+                </button>
+                <!-- 登出(icon) -->
+                <button class="icon icon-24" id="logoutBtn" aria-label="登出" tabindex="0">
+                    <img src="images/ic_logout_2.svg" alt="登出" class="lazyload">
+                </button>
+
+            </div>
+        </header>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" id="hamburgerMenu" aria-hidden="true">
+            <div class="menu-item" tabindex="0" role="button">
+                <div class="icon icon-24" aria-hidden="true">
+                    <img src="images/ic-img-rename.svg" alt="" class="lazyload">
+                </div>
+                <span class="menu-text">給小玉評分與鼓勵</span>
+            </div>
+            <div class="menu-item" tabindex="0" role="button">
+                <div class="icon icon-24" aria-hidden="true">
+                    <img src="images/world_2_light.svg" alt="" class="lazyload">
+                </div>
+                <span class="menu-text">English Service</span>
+            </div>
+            <div class="menu-item flex-col">
+                <div class="menu-item-header">
+                    <div class="icon icon-24" aria-hidden="true">
+                        <img src="images/ic-img-personal.svg" alt="" class="lazyload">
+                    </div>
+                    <span class="menu-text">個資運用說明</span>
+                </div>
+                <div class="menu-privacy-text" tabindex="0">
+                    為保障您的權益，請詳細閱讀「<a href="#">個人資料運用法定告知事項</a>」、「<a href="#">隱私權保護措施</a>」，如您已充分了解並同意前述告知事項，請繼續進行對談服務。
+                </div>
+                <div class="btn-wrapper">
+                    <button class="btn-primary btn-h-46" id="agreeBtn" tabindex="0">同意並繼續服務</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Announce (浮動區塊) -->
+        <section class="Anounce" id="announceBlock" aria-label="系統公告">
+    <div class="icon icon-22" aria-hidden="true">
+        <img src="images/ic-img-announcement.svg" alt="" class="lazyload">
+    </div>
+
+    <div class="message" tabindex="0">
+        <div class="marquee-wrap">
+            <div class="marquee-list">
+                <div class="marquee-item">
+                    <span>看破詐騙，防詐資訊：【<a href="#" aria-label="點我看防詐資訊">點我看</a>】</span>
+                </div>
+                <div class="marquee-item">
+                    <span>Unicard指定通路回饋加碼：【<a href="#" aria-label="立即查看信用卡優惠">立即查看</a>】</span>
+                </div>
+                <div class="marquee-item">
+                    <span>外幣定存最新利率公告：【<a href="#" aria-label="點我查看最新利率">點我看</a>】</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="icon icon-44" id="btnCloseAnnounce" aria-label="關閉公告" tabindex="0">
+        <img src="images/ic-fun-popup-closed.svg" alt="關閉" class="lazyload">
+    </button>
+</section>
+
+        <!-- 3. 對話區域 -->
+        <!-- 預留區塊 -->
+        <section class="chat-container" aria-label="對話內容" tabindex="0">
+
+            <!-- Bot Message Group 1 -->
+            <div class="msg-row bot is-hidden" id="botMsg1">
+                <!-- Avatar -->
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-hello.gif" alt="" class="lazyload">
+                </div>
+                <!-- Messages container -->
+                <div class="msg-content">
+                    
+                    <div class="typing-bubble has-caret">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <!-- Text Bubble 1 -->
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        鄭小姐 您好，<br>
+                        您已從 LINE 帳號登入！
+                    </div>
+
+                    <!-- Text Bubble 2 -->
+                    <div class="msg-bubble" tabindex="0">
+                        LINE pay 最高4.5% → <a href="#" class="link-teal bold">申辦 Unicard</a><br>
+                        普發現金一萬元 → <a href="#" class="link-teal bold">立即了解</a>
+                    </div>
+
+                    <!-- Horizontal Scroll Cards -->
+                    <div class="scroll-area">
+    <button class="scroll-nav scroll-nav-left" type="button" aria-label="往左滑動">
+    <img src="images/icon-arrow-left.svg" alt="往左" class="icon-arrow">
+</button>
+
+    <div class="scroll-wrapper" tabindex="0" aria-label="可左右滑動的服務卡片">
+        <!-- Card 1 -->
+        <div class="scroll-card">
+            <div class="card-image"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="card-demo1.png" alt="" class="lazyload"></div>
+            <div class="card-title text-green bold">信用卡服務</div>
+            <div class="card-btn btn-hint" id="cardBillDetailBtn">帳單/消費明細</div>
+            <div class="card-btn">消費有問題</div>
+            <div class="card-btn">旅遊活動滿額贈</div>
+            <div class="card-btn no-border">保費分期活動</div>
+        </div>
+
+        <div class="scroll-card">
+            <div class="card-image"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="card-demo2.png" alt="" class="lazyload"></div>
+            <div class="card-title text-green bold">熱門服務</div>
+            <div class="card-btn">信貸優惠</div>
+            <div class="card-btn">分期活動</div>
+            <div class="card-btn">預借現金</div>
+            <div class="card-btn no-border">綁定LINE抽好禮</div>
+        </div>
+
+        <div class="scroll-card">
+            <div class="card-image"><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="card-demo3.png" alt="" class="lazyload"></div>
+            <div class="card-title text-green bold">銀行服務</div>
+            <div class="card-btn">變更資料</div>
+            <div class="card-btn">數位帳戶</div>
+            <div class="card-btn">跨境網購</div>
+            <div class="card-btn no-border">外匯業務</div>
+        </div>
+    </div>
+
+    <button class="scroll-nav scroll-nav-right" type="button" aria-label="往右滑動">
+    <img src="images/icon-arrow-right.svg" alt="往右" class="icon-arrow">
+</button>
+</div>
+
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 1-->
+            <div class="msg-row user is-hidden" id="userMsg1">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        帳單/消費明細
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+            
+            <!-- Bot Message Group 2 -->
+            <div class="msg-row bot is-hidden" id="botMsg2">
+                <!-- Avatar -->
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <!-- Messages container -->
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        快速查詢本期帳單與近期消費明細
+                        <div class="msg-actions">
+                            <button class="msg-action-btn primary" id="currentBillBtn">本期帳單</button>
+                            <button class="msg-action-btn secondary">未出帳明細</button>
+                            <button class="msg-action-btn secondary">近30天消費明細</button>
+                        </div>
+                    </div>
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="images/Huge-icon.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="images/img_helpless.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 2 -->
+            <div class="msg-row user is-hidden" id="userMsg2">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        本期帳單
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 3 -->
+            <div class="msg-row bot is-hidden" id="botMsg3">
+                <!-- Avatar -->
+               <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <!-- Messages container -->
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        為維護您的權益，需要由正卡人完成身分驗證才能協助查詢或處理喔！歡迎使用玉山行動銀行 APP，驗證更快速、更順暢。
+                    </div>
+                    <div class="action-cards-grid">
+                        <button class="action-card btn-hint" id="appVerifyBtn" tabindex="0">
+                            <img src="images/icon-faceID.svg" class="action-card-icon lazyload" alt="">
+                            <div class="action-card-text">玉山銀行<br>APP驗證</div>
+                        </button>
+                        <button class="action-card" tabindex="0">
+                            <img src="images/icon-message.svg" class="action-card-icon lazyload" alt="">
+                            <div class="action-card-text">簡訊驗證</div>
+                        </button>
+                    </div>
+                    <div class="msg-bubble" tabindex="0">
+                        ＊溫馨提醒：若尚未開通玉山數位帳戶的顧客請先進行 <a href="#" class="link-teal bold">立即開戶</a> 並 <a href="#" class="link-teal bold">下載安裝玉山行銀APP</a>
+                        <div class="msg-actions">
+                            <button class="msg-action-btn secondary btn-h-46">下次查詢，繼續詢問其他問題</button>
+                        </div>
+                    </div>
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="images/Huge-icon.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="images/img_helpless.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 3 -->
+            <div class="msg-row user is-hidden" id="userMsg3">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        玉山銀行APP驗證
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 4: Jumping -->
+            <div class="msg-row bot is-hidden" id="botMsg4">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-loading.gif" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        黑熊跳轉中，請稍後⋯
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 5: Bill Summary Card -->
+            <div class="msg-row bot is-hidden" id="botMsg5">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <div class="bill-card">
+                            <div class="bill-title">2026年3月帳單</div>
+                            <div class="bill-info-text">
+                                帳單結帳日：2025/02/13<br>
+                                繳款截止日：2025/03/03
+                            </div>
+                            <div class="bold" style="font-size: 16px; color: rgba(0,0,0,0.8);">台幣帳單 ( TWD )</div>
+                            
+                            <div class="bill-highlight">
+                                <div class="bill-main-amount">
+                                    <div class="bill-label">本期帳單金額</div>
+                                    <div class="bill-value-large">$47,884</div>
+                                </div>
+                                <div class="bill-sub-info">
+                                    扣繳帳號：台新銀行,末四碼4099
+                                </div>
+                                <div class="bill-detail-list">
+                                    <div class="bill-detail-row">
+                                        <span>台幣最低應繳</span>
+                                        <span>TWD 7,317</span>
+                                    </div>
+                                    <div class="bill-detail-row">
+                                        <div class="bill-detail-label">
+                                            <span>已繳金額</span>
+                                            <img src="images/ic-btn-question-green.svg" class="icon-q lazyload" alt="說明">
+                                        </div>
+                                        <span>TWD 0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bill-btn-group">
+                                <button class="bill-btn primary" id="paymentRecordBtn">
+                                    <span>繳款紀錄</span>
+                                    <img src="images/ic-img-search.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                                <button class="bill-btn secondary">
+                                    <span>帳單明細</span>
+                                    <img src="images/ic-img-search.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Actions -->
+                    <div class="msg-bubble" tabindex="0">
+                        <div class="msg-actions" style="margin-top: 0;">
+                            <button class="msg-action-btn secondary">立即繳款</button>
+                            <button class="msg-action-btn secondary">查詢未出帳明細</button>
+                            <button class="msg-action-btn secondary">貼心提醒</button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="images/Huge-icon.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="images/img_helpless.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 5 -->
+            <div class="msg-row user is-hidden" id="userMsg5">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        繳款紀錄
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 6: Payment Record Detail -->
+            <div class="msg-row bot is-hidden" id="botMsg6">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <div class="bill-card">
+                            <div class="bill-title" style="color: #0f62fe;">繳款紀錄</div>
+                            <div class="bold" style="font-size: 16px; color: rgba(0,0,0,0.8);">台幣帳單 ( TWD )</div>
+                            
+                            <div class="bill-highlight">
+                                <div class="bill-main-amount">
+                                    <div class="bill-label">上期應繳金額</div>
+                                    <div class="bill-value-large">$50,133</div>
+                                </div>
+                                <div class="bill-main-amount" style="flex-direction: row; justify-content: center; gap: 7px;">
+                                    <div class="pill-bordered red">已申請自動扣繳</div>
+                                    <div class="pill-bordered teal">
+                                        <span>繳款完成</span>
+                                        <img src="images/ic-img-result-success.svg" class="icon-s lazyload" alt="">
+                                    </div>
+                                </div>
+                                <div class="bill-detail-list">
+                                    <div class="bill-detail-row">
+                                        <span>調整溢付款</span>
+                                        <span>TWD 0</span>
+                                    </div>
+                                    <div class="bill-detail-row">
+                                        <span>自動轉帳繳款</span>
+                                        <span>TWD -50,133</span>
+                                    </div>
+                                    <div class="bill-detail-row">
+                                        <span>上期未繳金額</span>
+                                        <span>TWD 0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bill-btn-group">
+                                <button class="bill-btn primary" id="statementDetailBtn">
+                                    <span>帳單明細</span>
+                                    <img src="images/ic-img-search.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                                <button class="bill-btn secondary">
+                                    <span>本期帳單</span>
+                                    <img src="images/ic-img-search.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Actions Grid -->
+                    <div class="msg-bubble" tabindex="0">
+                        <div class="msg-actions">
+                            <button class="msg-action-btn secondary">查詢未出帳明細</button>
+                            <button class="msg-action-btn secondary">貼心提醒</button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="images/Huge-icon.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="images/img_helpless.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 6 -->
+            <div class="msg-row user is-hidden" id="userMsg6">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        帳單明細
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 7: Transaction Details -->
+            <div class="msg-row bot is-hidden" id="botMsg7">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <div class="bill-card">
+                            <div class="bill-title" style="color: #0f62fe;">帳單明細</div>
+                            
+                            <div class="transaction-search">
+                                <img src="images/ic-img-search-light.svg" style="width: 32px; height: 32px;" class="lazyload" alt="">
+                                <input type="text" placeholder="請輸入商店名稱或金額" id="transactionSearchInput">
+                            </div>
+
+                            <div class="filter-pills">
+                                <div class="filter-pill" data-type="card">
+                                    <span class="pill-text">卡別</span>
+                                    <img src="images/ic-btn-arrow.svg" class="pill-icon lazyload" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" data-type="holder">
+                                    <span class="pill-text">正附卡</span>
+                                    <img src="images/ic-btn-arrow.svg" class="pill-icon lazyload" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" data-type="date">
+                                    <span class="pill-text">日期</span>
+                                    <img src="images/ic-btn-arrow.svg" class="pill-icon lazyload" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" data-type="currency">
+                                    <span class="pill-text">幣別</span>
+                                    <img src="images/ic-btn-arrow.svg" class="pill-icon lazyload" alt="">
+                                    <span class="pill-close">✕</span>
+                                </div>
+                                <div class="filter-pill" id="clearFilters" style="border: 1px solid #262626;">
+                                    <span class="pill-text">取消篩選</span>
+                                </div>
+                            </div>
+                            <div class="year-tag-wrapper">
+                                <div class="year-tag">2026/3月帳單明細</div>
+                            </div>
+                            
+                            <div style="max-height: 450px; overflow-y: auto; overflow-x: hidden;" id="transactionList">
+                                <!-- <div class="year-tag">2026/3月帳單明細</div> -->
+                                
+                                <!-- Item 1 -->
+                                <div class="transaction-item" data-name="熊本熊卡國內消費1%現金回饋">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">熊本熊卡國內消費1%現金回饋</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount">-21</span></div>
+                                            <div>02/18</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/18</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">-21</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 2 -->
+                                <div class="transaction-item" data-name="熊本熊卡Paypay消費3%回饋">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">熊本熊卡Paypay消費3%回饋</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount">-240</span></div>
+                                            <div>02/18</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/18</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">-240</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 3 -->
+                                <div class="transaction-item" data-name="義美股份有限公司-永安門市">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">義美股份有限公司-永安門市</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">40</span></div>
+                                            <div>02/17</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/17</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">40</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 4 -->
+                                <div class="transaction-item" data-name="誠品信義旗艦店">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">誠品信義旗艦店</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">8,030</span></div>
+                                            <div>02/17</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/17</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">8,030</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 5 -->
+                                <div class="transaction-item" data-name="中華電信">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">信用卡扣繳中華電信0976xxx33 11501</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">499</span></div>
+                                            <div>02/16</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/16</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">499</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 6 -->
+                                <div class="transaction-item" data-name="APPLE.COM">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">APPLE.COM/BILL IRL CORK</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload"alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">299</span></div>
+                                            <div>02/14</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/14</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">290</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 7 -->
+                                <div class="transaction-item" data-name="新光三越">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">新光三越 SP 台北南西店</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">6,800</span></div>
+                                            <div>02/14</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/14</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">6,800</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 8 -->
+                                <div class="transaction-item" data-name="悠遊卡自動加值金額">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">悠遊卡自動加值金額-台灣高鐵高鐵 台中車站</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">500</span></div>
+                                            <div>02/12</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/12</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">500</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 9 -->
+                                <div class="transaction-item" data-name="MOS">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">MOS-民權西路店(櫃檯)</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">210</span></div>
+                                            <div>02/11</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/11</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">210</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 10 -->
+                                <div class="transaction-item" data-name="統一超商">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">統一超商-市府店</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">250</span></div>
+                                            <div>02/10</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/10</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">250</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Item 11 -->
+                                <div class="transaction-item" data-name="STARBUCKS">
+                                    <div class="transaction-item-header">
+                                        <div class="transaction-title-row">
+                                            <div class="transaction-title">STARBUCKS</div>
+                                            <img src="images/ic-btn-arrow.svg" class="transaction-chevron lazyload" alt="">
+                                        </div>
+                                        <div class="transaction-info-row">
+                                            <div>TWD <span class="transaction-amount" style="color: #00a19b;">250</span></div>
+                                            <div>02/10</div>
+                                        </div>
+                                    </div>
+                                    <div class="transaction-detail">
+                                        <div class="transaction-detail-row">
+                                            <div class="bold transaction-detail-label">交易明細</div>
+                                            <div class="tag-query">刷卡疑問</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易卡別</div>
+                                            <div class="transaction-detail-val">Unicard-正卡</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易日期</div>
+                                            <div class="transaction-detail-val">2026/02/10</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易幣別</div>
+                                            <div class="transaction-detail-val">TWD</div>
+                                        </div>
+                                        <div class="transaction-detail-row">
+                                            <div class="transaction-detail-label">交易金額</div>
+                                            <div class="transaction-detail-val">250</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bill-btn-group">
+                                <button class="bill-btn secondary">
+                                    <span>本期帳單</span>
+                                    <img src="images/ic-img-search.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                                <button class="bill-btn secondary">
+                                    <span>繳款紀錄</span>
+                                    <img src="images/ic-img-search.svg" class="bill-btn-icon lazyload" alt="">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bot Action Grid 2 -->
+                    <div class="msg-bubble" tabindex="0">
+                        <div class="msg-actions" style="margin-top: 0;">
+                            <button class="msg-action-btn primary" id="payNowBtn">立即繳款</button>
+                            <button class="msg-action-btn secondary">查詢未出帳明細</button>
+                            <button class="msg-action-btn secondary">貼心提醒</button>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="images/Huge-icon.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="images/img_helpless.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 7 -->
+            <div class="msg-row user is-hidden" id="userMsg7">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        立即繳款
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 8: Payment Amount Selection -->
+            <div class="msg-row bot is-hidden" id="botMsg8">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        <p class="bold">請選擇您要繳納的金額與方式</p>
+                        <p style="margin-top: 10px;">＊繳款金額高於 20,000 元僅能線上繳款，低於 20,000 元則可線上或至超商繳款。</p>
+                    </div>
+                    
+                    <div class="scroll-area">
+    <button class="scroll-nav scroll-nav-left" type="button" aria-label="往左滑動">
+    <img src="images/icon-arrow-left.svg" alt="往左" class="icon-arrow">
+</button>
+
+    <div class="payment-scroll-container">
+        <div class="payment-card">
+            <div class="payment-card-title">尚須繳納金額</div>
+            <div class="payment-card-info">
+                <div class="payment-currency">台幣TWD</div>
+                <div class="payment-amount">$47,884</div>
+            </div>
+            <button class="payment-card-btn">立即線上繳款</button>
+        </div>
+
+        <div class="payment-card">
+            <div class="payment-card-title">最低應繳金額</div>
+            <div class="payment-card-info">
+                <div class="payment-currency">台幣TWD</div>
+                <div class="payment-amount">$7,317</div>
+            </div>
+            <div class="payment-card-btn-group">
+                <button class="payment-card-btn btn-hint" id="barcodePayBtn" style="border-bottom: 1px solid #e1efef;">超商條碼繳款</button>
+                <button class="payment-card-btn">立即線上繳款</button>
+            </div>
+        </div>
+
+        <div class="payment-card">
+            <div class="payment-card-title">自行輸入金額</div>
+            <div class="payment-card-info">
+                <div class="payment-currency">台幣TWD</div>
+                <div class="payment-amount-input-wrapper">
+                    <input type="text" class="payment-amount-input" id="selfInputAmount" placeholder="請輸入金額">
+                    <img src="images/icon-edit.svg" class="icon-20 lazyload" alt="編輯">
+                </div>
+                <div class="payment-disclaimer">＊未繳金額將計算循環利息<br>謹慎理財 信用無價</div>
+            </div>
+            <div class="payment-card-btn-group" id="selfInputBtns">
+                <button class="payment-card-btn" id="btnStorePay" style="display: none; border-bottom: 1px solid #e1efef;">超商條碼繳款</button>
+                <button class="payment-card-btn" id="btnOnlinePay" style="display: none;">立即線上繳款</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="scroll-nav scroll-nav-right" type="button" aria-label="往右滑動">
+    <img src="images/icon-arrow-right.svg" alt="往右" class="icon-arrow">
+</button>
+</div>
+
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- User Message Group 8: 超商條碼繳款 -->
+            <div class="msg-row user is-hidden" id="userMsg8">
+                <div class="msg-content">
+                    <div class="msg-bubble has-caret" tabindex="0">
+                        超商條碼繳款(最低應繳金額)
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+            <!-- Bot Message Group 9: Barcode Download Dialogue -->
+            <div class="msg-row bot is-hidden"  id="botMsg9">
+                <div class="msg-avatar" aria-hidden="true">
+                    <img src="images/bear-happy.gif" alt="" class="lazyload">
+                </div>
+                <div class="msg-content">
+                    <div class="typing-bubble">
+                        <div class="typing-dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="barcode-card">
+                        <div class="barcode-title">超商條碼繳款</div>
+                        <div class="barcode-subtitle">2026年3月帳單</div>
+                        <div class="barcode-details">
+                            帳單結帳日：2025/02/13<br>
+                            繳款截止日：2025/03/03
+                        </div>
+                        <div class="amount-highlight">
+                            <span>TWD</span>
+                            <span>7,317</span>
+                        </div>
+                        <div class="barcode-subtitle">適用超商</div>
+                        <div class="store-icons-container">
+                            <img src="images/img_7-11.svg" class="store-icon lazyload" alt="7-11">
+                            <img src="images/img_familyMart.svg" class="store-icon lazyload" alt="FamilyMart">
+                            <img src="images/img_OK.svg" class="store-icon lazyload" alt="OK">
+                            <img src="images/img_HiLife.svg" class="store-icon lazyload" alt="Hi-Life">
+                        </div>
+                        <div class="barcodes-container">
+                            <!-- Barcode 1 -->
+                            <div class="barcode-item">
+                                <div class="barcode-img-placeholder">
+                                    <img src="images/barcode-1.svg" alt="">
+                                </div>
+                                <div class="barcode-text">120419C1E</div>
+                            </div>
+                            <!-- Barcode 2 -->
+                            <div class="barcode-item">
+                                <div class="barcode-img-placeholder">
+                                    <img src="images/barcode-2.svg" alt="">
+                                </div>
+                                <div class="barcode-text">1975093618000000</div>
+                            </div>
+                            <!-- Barcode 3 -->
+                            <div class="barcode-item">
+                                <div class="barcode-img-placeholder">
+                                   <img src="images/barcode-3.svg" alt="">
+                                </div>
+                                <div class="barcode-text">03209000006671</div>
+                            </div>
+                        </div>
+                        <button class="download-barcode-btn" id="btnDownloadBarcode">下載條碼</button>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="msg-feedback" tabindex="0" style="margin-top: 10px;">
+                        這個回答？
+                        <div class="options">
+                            <div class="msg-feedback-btn"><img src="images/Huge-icon.svg" class="lazyload" alt="">有幫助</div>
+                            <div class="msg-feedback-btn"><img src="images/img_helpless.svg" class="lazyload" alt="">沒幫助</div>
+                        </div>
+                    </div>
+                    <div class="msg-time" aria-hidden="true">16:20:36</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 4. 對話輸入框 (InputArea) -->
+        <footer class="InputArea" aria-label="對話輸入區">
+            <!-- 開合(按鈕 + span 動畫) -->
+            <button class="expand-btn" id="btnExpand" aria-label="展開附加功能" tabindex="0">
+                <span class="expand-icon">
+                    <span class="expand-line vertical"></span>
+                    <span class="expand-line horizontal"></span>
+                </span>
+            </button>
+            <!-- input -->
+            <div class="input-wrapper">
+                <input type="text" placeholder="請輸入文字" aria-label="輸入文字訊息" tabindex="0">
+            </div>
+            <!-- 送出(icon) -->
+            <button class="icon icon-32" aria-label="送出訊息" tabindex="0">
+                <img src="images/send.svg" alt="送出" class="lazyload">
+            </button>
+        </footer>
+
+        <!-- 5. 附加功能面板 (Action Panel) -->
+        <div class="action-panel" id="actionPanel" aria-label="更多功能">
+            <div class="action-grid">
+                <button class="action-item" aria-label="帳單自動扣款" tabindex="0">
+                    <div class="action-item-icon"><img src="images/icon-bill.svg" alt="" class="lazyload"></div>
+                    <span class="action-item-text">帳單自動扣款</span>
+                </button>
+                <button class="action-item" aria-label="玉山卡超好用" tabindex="0">
+                    <div class="action-item-icon"><img src="images/icon-news.svg" alt="" class="lazyload"></div>
+                    <span class="action-item-text">玉山卡超好用</span>
+                </button>
+                <button class="action-item" aria-label="貸款限時優惠" tabindex="0">
+                    <div class="action-item-icon"><img src="images/icon-loan.svg" alt="" class="lazyload"></div>
+                    <span class="action-item-text">貸款限時優惠</span>
+                </button>
+                <button class="action-item" aria-label="卡友必備神器" tabindex="0">
+                    <div class="action-item-icon"><img src="images/icon-card.svg" alt="" class="lazyload"></div>
+                    <span class="action-item-text">卡友必備神器</span>
+                </button>
+                <button class="action-item" aria-label="加個LINE" tabindex="0">
+                    <div class="action-item-icon"><img src="images/icon-line.svg" alt="" class="lazyload"></div>
+                    <span class="action-item-text">加個LINE</span>
+                </button>
+                <button class="action-item" aria-label="加入數位會員" tabindex="0">
+                    <div class="action-item-icon"><img src="images/icon-services.svg" alt="" class="lazyload"></div>
+                    <span class="action-item-text">加入數位會員</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- jQuery & JavaScript for lazy loading images via data-src -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
+   
+
+    <!-- Date Picker Overlay -->
+    <div class="date-picker-overlay" id="datePickerOverlay">
+        <div class="date-picker-modal">
+            <div class="modal-title">選擇日期區間</div>
+            <div class="date-input-group">
+                <label for="startDate">開始日期</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="date-input-group">
+                <label for="endDate">結束日期</label>
+                <input type="date" id="endDate">
+            </div>
+            <div class="modal-actions">
+                <button class="msg-action-btn secondary" id="cancelDatePicker">取消</button>
+                <button class="msg-action-btn secondary" id="confirmDatePicker">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Success Overlay -->
+    <div class="download-success-overlay" id="downloadSuccessOverlay">
+        <div class="download-success-modal">
+            <div class="success-gif-placeholder">
+                <!-- GIF 預留位置 -->
+                <img src="images/bear-happy.gif" alt="" class="lazyload">
+            </div>
+            <div class="success-text">已下載到相簿</div>
+            <button class="msg-action-btn secondary btn-h-46" id="confirmDownload">確認</button>
+        </div>
+    </div>
+
+    <!-- Overlay：Loading（白色半透明） -->
+    <div class="overlay overlay-loading" id="loadingOverlay">
+        <div class="overlay-content">
+            <div class="overlay-gif-placeholder"></div>
+            <div class="overlay-text">Loading...</div>
+        </div>
+    </div>
+    
+    <!-- Overlay：滿版圖片 -->
+    <div class="overlay overlay-image" id="imageOverlay">
+        <div class="overlay-content">
+            <div class="overlay-gif-placeholder-2"></div>
+        </div>
+    </div>
+</body>
+</html>

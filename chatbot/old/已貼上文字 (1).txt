@@ -1,0 +1,236 @@
+$(document).ready(function() {
+            // Hamburger Menu Interaction
+            $('#btnHamburger').on('click', function() {
+                const menu = $('#hamburgerMenu');
+                const isExpanded = menu.is(':visible');
+                
+                if (isExpanded) {
+                    menu.slideUp(200);
+                    $(this).attr('aria-expanded', 'false');
+                    menu.attr('aria-hidden', 'true');
+                    $(this).attr('aria-label', '開啟選單');
+                    $(this).removeClass('is-active');
+                } else {
+                    menu.slideDown(200);
+                    $(this).attr('aria-expanded', 'true');
+                    menu.attr('aria-hidden', 'false');
+                    $(this).attr('aria-label', '關閉選單');
+                    $(this).addClass('is-active');
+                }
+            });
+
+            // Close Menu when clicking Agree
+            $('#agreeBtn').on('click', function() {
+                $('#hamburgerMenu').slideUp(200);
+                $('#btnHamburger').attr('aria-expanded', 'false').attr('aria-label', '開啟選單').removeClass('is-active');
+                $('#hamburgerMenu').attr('aria-hidden', 'true');
+            });
+
+            // Remove Announce Block Completely
+            $('#btnCloseAnnounce').on('click', function() {
+                $('#announceBlock').remove();
+            });
+
+            // Expand Button Interaction
+            $('#btnExpand').on('click', function() {
+                $(this).toggleClass('is-active');
+                if ($(this).hasClass('is-active')) {
+                    $(this).attr('aria-label', '收起附加功能');
+                    $('#actionPanel').slideDown(250);
+                } else {
+                    $(this).attr('aria-label', '展開附加功能');
+                    $('#actionPanel').slideUp(250);
+                }
+            });
+
+            // Lazy load implementation using IntersectionObserver
+            if ('IntersectionObserver' in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = $(entry.target);
+                            lazyImage.attr('src', lazyImage.attr('data-src'));
+                            lazyImage.removeClass('lazyload');
+                            lazyImageObserver.unobserve(lazyImage[0]);
+                        }
+                    });
+                });
+
+                $('.lazyload').each(function() {
+                    lazyImageObserver.observe(this);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                $('.lazyload').each(function() {
+                    $(this).attr('src', $(this).attr('data-src'));
+                    $(this).removeClass('lazyload');
+                });
+            }
+
+            // Transaction Detail Expansion
+            $(document).on('click', '.transaction-item-header', function() {
+                const item = $(this).closest('.transaction-item');
+                const chevron = item.find('.transaction-chevron');
+                item.toggleClass('expanded');
+                item.find('.transaction-detail').slideToggle(300);
+            });
+
+            // Filter Dropdown Logic
+            const filterOptions = {
+                card: ["熊本熊卡", "Unicard", "世界卡", "悠遊聯名卡"],
+                holder: ["正卡", "附卡"],
+                currency: ["TWD", "JPY", "USD", "EUR"]
+            };
+
+            const filterDefaults = {
+                card: "卡別",
+                holder: "正附卡",
+                date: "日期",
+                currency: "幣別"
+            };
+
+            // Toggle Dropdown
+            $(document).on('click', '.filter-pill:not(#clearFilters, [data-type="date"])', function(e) {
+                e.stopPropagation();
+                const type = $(this).data('type');
+                $('.filter-dropdown').remove(); // Close existing
+
+                const dropdown = $('<div class="filter-dropdown"></div>');
+                filterOptions[type].forEach(opt => {
+                    dropdown.append(`<div class="dropdown-option" data-value="${opt}">${opt}</div>`);
+                });
+
+                $(this).after(dropdown);
+                dropdown.fadeIn(200);
+
+                // Handle option selection
+                const pill = $(this);
+                dropdown.find('.dropdown-option').on('click', function(e) {
+                    e.stopPropagation();
+                    const val = $(this).data('value');
+                    pill.addClass('active');
+                    pill.find('.pill-text').text(val);
+                    dropdown.fadeOut(200, function() { $(this).remove(); });
+                    filterTransactions();
+                });
+            });
+
+            // Date Picker Logic
+            $(document).on('click', '.filter-pill[data-type="date"]', function() {
+                $('#datePickerOverlay').css('display', 'flex').hide().fadeIn(200);
+            });
+
+            $('#cancelDatePicker').on('click', function() {
+                $('#datePickerOverlay').fadeOut(200);
+            });
+
+            $('#confirmDatePicker').on('click', function() {
+                const start = $('#startDate').val();
+                const end = $('#endDate').val();
+                if (start && end) {
+                    const pill = $('.filter-pill[data-type="date"]');
+                    pill.addClass('active');
+                    // Format date to mm/dd
+                    const s = start.split('-').slice(1).join('/');
+                    const e = end.split('-').slice(1).join('/');
+                    pill.find('.pill-text').text(`${s}-${e}`);
+                    $('#datePickerOverlay').fadeOut(200);
+                    filterTransactions();
+                } else {
+                    alert('請選擇完整日期區間');
+                }
+            });
+
+            // Close dropdowns on click outside
+            $(document).on('click', function() {
+                $('.filter-dropdown').fadeOut(200, function() { $(this).remove(); });
+            });
+
+            // Pill Close (Reset)
+            $(document).on('click', '.pill-close', function(e) {
+                e.stopPropagation();
+                const pill = $(this).closest('.filter-pill');
+                const type = pill.data('type');
+                pill.removeClass('active');
+                pill.find('.pill-text').text(filterDefaults[type]);
+                filterTransactions();
+            });
+
+            $('#clearFilters').on('click', function() {
+                $('.filter-pill').each(function() {
+                    const type = $(this).data('type');
+                    if (type) {
+                        $(this).removeClass('active');
+                        $(this).find('.pill-text').text(filterDefaults[type]);
+                    }
+                });
+                $('#transactionSearchInput').val('');
+                filterTransactions();
+            });
+
+            // Unified filter function
+            function filterTransactions() {
+                const searchVal = $('#transactionSearchInput').val().toLowerCase();
+                
+                $('.transaction-item').each(function() {
+                    const name = $(this).data('name').toLowerCase();
+                    const amountText = $(this).find('.transaction-amount').text().replace(/[^-0-9.]/g, '');
+                    
+                    let show = true;
+
+                    // Search check
+                    if (searchVal && !name.includes(searchVal) && !amountText.includes(searchVal)) {
+                        show = false;
+                    }
+
+                    // Card Filter check
+                    const cardPill = $('.filter-pill[data-type="card"]');
+                    if (cardPill.hasClass('active')) {
+                        const selected = cardPill.find('.pill-text').text();
+                        const itemCard = $(this).find('.transaction-detail-val').first().text(); 
+                        // Note: In a real app we'd have better data attributes, here we mock the check
+                        if (!itemCard.includes(selected) && name !== "熊本熊卡國內消費1%現金回饋") { // Hardcoded mock condition
+                            // show = false; // Simplified for demo
+                        }
+                    }
+
+                    if (show) $(this).show(); else $(this).hide();
+                });
+            }
+
+            // Transaction Search
+            $('#transactionSearchInput').on('keyup', filterTransactions);
+
+            // Self-input Amount Logic
+            $('#selfInputAmount').on('input', function() {
+                const rawVal = $(this).val().replace(/[^0-9]/g, '');
+                $(this).val(rawVal); // Keep only numbers
+                
+                const amount = parseInt(rawVal, 10);
+                const btnStore = $('#btnStorePay');
+                const btnOnline = $('#btnOnlinePay');
+                
+                if (rawVal && !isNaN(amount)) {
+                    btnOnline.show();
+                    if (amount <= 20000) {
+                        btnStore.show().css('border-bottom', '1px solid #e1efef');
+                        btnOnline.css('border-bottom', 'none');
+                    } else {
+                        btnStore.hide();
+                        btnOnline.css('border-bottom', 'none');
+                    }
+                } else {
+                    btnStore.hide();
+                    btnOnline.hide();
+                }
+            });
+
+            // Barcode Download Pop-up Logic
+            $('#btnDownloadBarcode').on('click', function() {
+                $('#downloadSuccessOverlay').css('display', 'flex').hide().fadeIn(200);
+            });
+
+            $('#confirmDownload').on('click', function() {
+                $('#downloadSuccessOverlay').fadeOut(200);
+            });
+        });
