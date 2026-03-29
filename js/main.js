@@ -213,7 +213,7 @@ $(document).ready(function() {
         
         if (rawVal && !isNaN(amount)) {
             btnOnline.show();
-            if (amount <= 20000) {
+            if (amount <= 19999) {
                 btnStore.show().css('border-bottom', '1px solid #e1efef');
                 btnOnline.css('border-bottom', 'none');
             } else {
@@ -296,16 +296,30 @@ $(function () {
     }
 
     function hideLoading() {
-        $('#loadingOverlay').fadeOut(200);
+        $('#loadingOverlay')
+
+        .delay(4000)   // 多顯示 2 秒
+        .fadeOut(200);
+
     }
 
-    function showImageOverlay() {
-        $('#imageOverlay').fadeIn(200);
-    }
+        
+    
+function showImageOverlay() {
+    $('#imageOverlay')
+        .addClass('is-show')
+        .css('opacity', 0)
+        .show()
+        .animate({ opacity: 1 }, 200);
+}
 
-    function hideImageOverlay() {
-        $('#imageOverlay').fadeOut(200);
-    }
+function hideImageOverlay() {
+    $('#imageOverlay').animate({ opacity: 0 }, 200, function () {
+        $(this).removeClass('is-show').hide();
+    });
+}
+
+
 
     function scrollChatToBottom() {
         const $chat = $('.chat-container');
