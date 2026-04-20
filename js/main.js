@@ -1,5 +1,12 @@
 
 $(document).ready(function() {
+    // Search Overlay Interaction
+    $('#searchOverlay').on('click', function() {
+        $(this).fadeOut(300, function() {
+            $(this).remove();
+        });
+    });
+
     // Hamburger Menu Interaction
     $('#btnHamburger').on('click', function() {
         const menu = $('#hamburgerMenu');
@@ -234,6 +241,21 @@ $(document).ready(function() {
     $('#confirmDownload').on('click', function() {
         $('#downloadSuccessOverlay').fadeOut(200);
     });
+
+    // Login Popup Logic
+    $('#popupLoginBtn').on('click', function() {
+        $('#loginOverlay').addClass('fade-out');
+        setTimeout(() => {
+            $('#loginOverlay').hide();
+        }, 500); 
+    });
+
+    $('#popupCancelBtn').on('click', function() {
+        $('#loginOverlay').addClass('fade-out');
+        setTimeout(() => {
+            $('#loginOverlay').hide();
+        }, 500);
+    });
 });
 
 
@@ -416,7 +438,7 @@ function hideImageOverlay() {
             startFlow();
         });
 
-        $('#cardBillDetailBtn').off('click').on('click', function () {
+        $('#cardBillDetailBtn, #sendBtn').off('click').on('click', function () {
             if (!$('#botMsg1').is(':visible') || $('#userMsg1').is(':visible')) return;
 
             showUserRow('#userMsg1');
@@ -462,44 +484,97 @@ function hideImageOverlay() {
             }, 300);
         });
 
-        $('#paymentRecordBtn').off('click').on('click', function () {
-            if (!$('#botMsg5').is(':visible') || $('#userMsg5').is(':visible')) return;
-
+        $('#paymentRecordBtn, #paymentRecordBtn-1').off('click').on('click', function () {
+            $('.chat-container').append($('#userMsg5')).append($('#botMsg6'));
             showUserRow('#userMsg5');
-
             addTimer(function () {
                 playBotRow('#botMsg6');
             }, 300);
         });
 
-        $('#statementDetailBtn').off('click').on('click', function () {
-            if (!$('#botMsg6').is(':visible') || $('#userMsg6').is(':visible')) return;
-
+        $('#statementDetailBtn, #statementDetailBtn-1').off('click').on('click', function () {
+            $('.chat-container').append($('#userMsg6')).append($('#botMsg7'));
             showUserRow('#userMsg6');
-
             addTimer(function () {
                 playBotRow('#botMsg7');
             }, 300);
         });
 
-        $('#payNowBtn').off('click').on('click', function () {
-            if (!$('#botMsg7').is(':visible') || $('#userMsg7').is(':visible')) return;
-
+        $('#payNowBtn, #payNowBtn-1').off('click').on('click', function () {
+            $('.chat-container').append($('#userMsg7')).append($('#botMsg8'));
             showUserRow('#userMsg7');
-
             addTimer(function () {
                 playBotRow('#botMsg8');
             }, 300);
         });
 
-        $('#barcodePayBtn').off('click').on('click', function () {
-            if (!$('#botMsg8').is(':visible') || $('#userMsg8').is(':visible')) return;
+        $('#currentBillBtn-1, #currentBillBtn-2').off('click').on('click', function () {
+            $('.chat-container').append($('#userMsg2')).append($('#botMsg5'));
+            showUserRow('#userMsg2');
+            addTimer(function () {
+                playBotRow('#botMsg5');
+            }, 300);
+        });
 
+        $('#btnOnlinePayFull, #btnOnlinePayLow, #btnOnlinePay').off('click').on('click', function () {
+            let amountStr = '';
+            // 卡片 1 或 2 抓取當下卡片的金額
+            if (this.id === 'btnOnlinePayFull' || this.id === 'btnOnlinePayLow') {
+                amountStr = $(this).closest('.payment-card').find('.payment-amount').text();
+            } 
+            // 卡片 3 抓取輸入框金額
+            else if (this.id === 'btnOnlinePay') {
+                let val = $('#selfInputAmount').val().replace(/[^0-9]/g, '');
+                if (val) {
+                    amountStr = '$' + Number(val).toLocaleString();
+                }
+            }
+
+            // 更新 botMsg10 與 botMsg11
+            if (amountStr && amountStr !== '$') {
+                $('#botMsg10 .payment-amount, #botMsg11 .payment-amount').text(amountStr);
+            }
+
+            // 無限循環：搬到底部並重新展示
+            $('.chat-container').append($('#userMsg8-1')).append($('#botMsg10'));
+            showUserRow('#userMsg8-1');
+            addTimer(function () {
+                playBotRow('#botMsg10');
+            }, 300);
+        });
+
+        $('#barcodePayBtn, #btnStorePay').off('click').on('click', function () {
+            let amountStr = '';
+            if (this.id === 'barcodePayBtn') {
+                amountStr = $(this).closest('.payment-card').find('.payment-amount').text();
+            } else if (this.id === 'btnStorePay') {
+                let val = $('#selfInputAmount').val().replace(/[^0-9]/g, '');
+                if (val) {
+                    amountStr = '$' + Number(val).toLocaleString();
+                }
+            }
+
+            if (amountStr && amountStr !== '$') {
+                $('#botMsg9 .payment-amount').text(amountStr);
+            }
+
+            $('.chat-container').append($('#userMsg8')).append($('#botMsg9'));
             showUserRow('#userMsg8');
-
             addTimer(function () {
                 playBotRow('#botMsg9');
             }, 300);
+        });
+
+        $('#payNowSend').off('click').on('click', function () {
+            $('.chat-container').append($('#userMsg10')).append($('#botMsg11'));
+            showUserRow('#userMsg10');
+            addTimer(function () { playBotRow('#botMsg11'); }, 300);
+        });
+
+        $('#payNowOk').off('click').on('click', function () {
+            $('.chat-container').append($('#userMsg11')).append($('#botMsg12'));
+            showUserRow('#userMsg11');
+            addTimer(function () { playBotRow('#botMsg12'); }, 300);
         });
 
         $('#logoutBtn').off('click').on('click', function () {
